@@ -7,13 +7,13 @@ title: TK的小站           # 站点标题
 subtitle: ''             # 站点副标题
 description: ''          # 站点描述
 keywords:                # 站点关键词
-author: TK               # 作者名称
+author: tkzzzzzz6               # 作者名称
 language: zh-CN          # 站点语言
 timezone: 'Asia/Shanghai' # 站点时区
 
 # URL 配置
 ## 在这里设置你的网站地址。例如，如果你用 GitHub Page，url 设置为 'https://username.github.io/project'
-url: https://tkzzzzzz6/tkzzzzzz6.github.io # 站点网址
+url: https://tkzzzzzz6.github.io # 站点网址
 permalink: :year/:month/:day/:title/                  # 文章永久链接格式
 permalink_defaults:                                   # 永久链接的默认值
 pretty_urls:
@@ -112,3 +112,9 @@ deploy:
 ## git@github.com:<username>/<username>.github.io.git
 
 # 分支也有讲究，一般是 master 或者 main
+
+# CDN 配置
+cdn:
+  enable: true
+  js: https://cdn.jsdelivr.net/npm/
+  css: https://cdn.jsdelivr.net/npm/

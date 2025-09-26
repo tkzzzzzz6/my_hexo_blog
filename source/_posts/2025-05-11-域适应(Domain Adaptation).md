@@ -1,6 +1,6 @@
 ---
 title: 2025-05-11-域适应(Domain Adaptation)
-data: 2025-05-11
+date: 2025-05-11
 tags: 深度学习
 ---
 # 2025-05-11-域适应(Domain Adaptation)
