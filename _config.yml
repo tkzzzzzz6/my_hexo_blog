@@ -1,0 +1,114 @@
+# Hexo 配置文件
+## 文档: https://hexo.io/docs/configuration.html
+## 源码: https://github.com/hexojs/hexo/
+
+# 站点信息
+title: TK的小站           # 站点标题
+subtitle: ''             # 站点副标题
+description: ''          # 站点描述
+keywords:                # 站点关键词
+author: TK               # 作者名称
+language: zh-CN          # 站点语言
+timezone: 'Asia/Shanghai' # 站点时区
+
+# URL 配置
+## 在这里设置你的网站地址。例如，如果你用 GitHub Page，url 设置为 'https://username.github.io/project'
+url: https://tkzzzzzz6/tkzzzzzz6.github.io # 站点网址
+permalink: :year/:month/:day/:title/                  # 文章永久链接格式
+permalink_defaults:                                   # 永久链接的默认值
+pretty_urls:
+  trailing_index: true # 是否保留结尾的 'index.html'，false 为去除
+  trailing_html: true  # 是否保留结尾的 '.html'，false 为去除
+
+# 目录设置
+source_dir: source         # 源文件目录
+public_dir: public         # 生成的静态文件目录
+tag_dir: tags              # 标签目录
+archive_dir: archives      # 归档目录
+category_dir: categories   # 分类目录
+code_dir: downloads/code   # 代码目录
+i18n_dir: :lang            # 多语言目录
+skip_render:               # 跳过渲染的文件
+
+# 写作相关
+new_post_name: :title.md   # 新文章的文件名格式
+default_layout: post       # 默认布局
+titlecase: false           # 标题是否转换为标题格式
+external_link:
+  enable: true             # 是否在新标签页打开外链
+  field: site              # 应用于整个站点
+  exclude: ''              # 排除的链接
+filename_case: 0           # 文件名大小写（0: 保持原样, 1: 全小写, 2: 全大写）
+render_drafts: false       # 是否渲染草稿
+post_asset_folder: false   # 是否为每篇文章使用独立资源文件夹
+relative_link: false       # 是否使用相对链接
+future: true               # 是否显示未来的文章
+syntax_highlighter: highlight.js # 代码高亮器
+# 代码高亮配置
+# 使用 highlight.js 进行代码高亮显示
+highlight:
+  line_number: true      # 显示行号
+  auto_detect: true      # 是否自动检测语言
+  tab_replace: ''        # 制表符替换（空为不替换）
+  wrap: true             # 代码块是否自动换行
+  hljs: false            # 是否使用 highlight.js 默认样式（false 为自定义样式）
+prismjs:
+  preprocess: true       # 是否预处理
+  line_number: true      # 显示行号
+  tab_replace: ''        # 制表符替换
+
+# 首页设置
+# path: 博客首页路径（默认 ''）
+# per_page: 每页显示文章数（0 为不分页）
+# order_by: 文章排序方式（默认按日期降序）
+index_generator:
+  path: ''               # 首页路径
+  per_page: 10           # 每页文章数
+  order_by: -date        # 按日期降序排列
+
+# 分类与标签
+default_category: uncategorized # 默认分类
+category_map:                   # 分类映射
+tag_map:                        # 标签映射
+
+# 元数据元素
+## https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta
+meta_generator: true            # 是否生成 meta 标签
+
+# 日期/时间格式
+## Hexo 使用 Moment.js 解析和显示日期
+## 你可以自定义日期格式，参考 http://momentjs.com/docs/#/displaying/format/
+date_format: YYYY-MM-DD         # 日期格式
+time_format: HH:mm:ss           # 时间格式
+## updated_option 支持 'mtime', 'date', 'empty'
+updated_option: 'mtime'         # 更新时间选项
+
+# 分页
+## 设置 per_page 为 0 可禁用分页
+per_page: 10                    # 每页文章数
+pagination_dir: page            # 分页目录
+
+# 包含/排除文件
+## include:/exclude: 只对 'source/' 文件夹生效
+include:                        # 包含的文件
+exclude:                        # 排除的文件
+ignore:                         # 忽略的文件
+
+# 扩展
+## 插件: https://hexo.io/plugins/
+## 主题: https://hexo.io/themes/
+theme: hingle                   # 当前使用的主题
+# theme: Kratos-Rebirth         # 可选主题
+
+# 部署
+## 文档: https://hexo.io/docs/one-command-deployment
+deploy:
+  type: git                     # 部署类型
+  repository: git@github.com:tkzzzzzz6/tkzzzzzz6.github.io.git # 仓库地址
+  branch: master                # 部署分支
+  
+# 注意 <git-repository-url> 有两种形式，就是网页上 code 里的 url 下载连接
+## https://github.com/<username>/<username>.github.io.git
+## git@github.com:<username>/<username>.github.io.git
+
+# 分支也有讲究，一般是 master 或者 main
