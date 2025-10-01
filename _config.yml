@@ -43,7 +43,7 @@ render_drafts: false       # 是否渲染草稿
 post_asset_folder: false   # 是否为每篇文章使用独立资源文件夹
 relative_link: false       # 是否使用相对链接
 future: true               # 是否显示未来的文章
-syntax_highlighter: highlight.js # 代码高亮器
+syntax_highlighter: prismjs.js # 代码高亮器（可选值：highlight.js 或 prismjs）
 # 代码高亮配置
 # 使用 highlight.js 进行代码高亮显示
 highlight:
@@ -51,7 +51,7 @@ highlight:
   auto_detect: true      # 是否自动检测语言
   tab_replace: ''        # 制表符替换（空为不替换）
   wrap: true             # 代码块是否自动换行
-  hljs: true           # 是否使用 highlight.js 默认样式（false 为自定义样式）
+  hljs: false            # 是否使用 highlight.js 默认样式（false 为自定义样式）
 prismjs:
   preprocess: true       # 是否预处理
   line_number: true      # 显示行号
@@ -68,8 +68,22 @@ index_generator:
 
 # 分类与标签
 default_category: uncategorized # 默认分类
-category_map:                   # 分类映射
-tag_map:                        # 标签映射
+category_map:                   # 分类映射（将中文分类映射为 URL 友好的英文名）
+  编程语言: programming
+  深度学习: deep-learning
+  算法学习: algorithm
+  课程学习: course
+  问题解决: troubleshooting
+  数学建模: mathematical-modeling
+  论文阅读: paper-reading
+tag_map:                        # 标签映射（将中文标签映射为 URL 友好的英文名）
+  程序开发: development
+  深度学习: deep-learning
+  算法练习: algorithm-practice
+  算法学习: algorithm
+  课程学习: course
+  问题解决: troubleshooting
+  数学建模: mathematical-modeling
 
 # 元数据元素
 ## https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta
