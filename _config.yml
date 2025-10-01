@@ -51,7 +51,7 @@ highlight:
   auto_detect: true      # 是否自动检测语言
   tab_replace: ''        # 制表符替换（空为不替换）
   wrap: true             # 代码块是否自动换行
-  hljs: false            # 是否使用 highlight.js 默认样式（false 为自定义样式）
+  hljs: true           # 是否使用 highlight.js 默认样式（false 为自定义样式）
 prismjs:
   preprocess: true       # 是否预处理
   line_number: true      # 显示行号
@@ -98,7 +98,6 @@ ignore:                         # 忽略的文件
 ## 插件: https://hexo.io/plugins/
 ## 主题: https://hexo.io/themes/
 theme: hingle                   # 当前使用的主题
-# theme: Kratos-Rebirth         # 可选主题
 
 # 部署
 ## 文档: https://hexo.io/docs/one-command-deployment
@@ -118,6 +117,15 @@ deploy:
 #   enable: true
 #   js: https://cdn.jsdelivr.net/npm/
 #   css: https://cdn.jsdelivr.net/npm/
+
+# hexo-filter-optimize 配置
+filter_optimize:
+  enable: true
+  css:
+    enable: false  # 禁用 CSS 合并，避免丢失样式
+  js:
+    enable: true
+
 mathjax:
   single_dollars: true   # 支持 $...$
   tags: none
