@@ -20,7 +20,7 @@ tags:
 
 现代的计算机， 大多遵守[冯诺依曼](https://so.csdn.net/so/search?q=%E5%86%AF%E8%AF%BA%E4%BE%9D%E6%9B%BC&spm=1001.2101.3001.7020)体系结构，即
 
-![1749359273853C1PzbOGpLoF9vXxxxUccT9IHnhd.png](https://gitee.com/tanke11223344/imagehost/raw/main/blog/1749359273853C1PzbOGpLoF9vXxxxUccT9IHnhd.png)
+![1749359273853C1PzbOGpLoF9vXxxxUccT9IHnhd.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1749359273853C1PzbOGpLoF9vXxxxUccT9IHnhd.png)
 
 > - CPU，即中央处理器，是一台计算机的运算核心和控制核心。其功能主要是解释计算机指令以及处理计算机软件中的数据。CPU 由运算器、控制器、寄存器、高速缓存及实现它们之间联系的数据、控制及状态的总线构成
 > - 存储器，分为外存和内存， 用于存储数据（使用二进制方式存储）
@@ -29,9 +29,9 @@ tags:
 
 ---
 
-![1749359294853F2FQbuNabouwzVxKPSvcLOzmnV2.png](https://gitee.com/tanke11223344/imagehost/raw/main/blog/1749359294853F2FQbuNabouwzVxKPSvcLOzmnV2.png)
+![1749359294853F2FQbuNabouwzVxKPSvcLOzmnV2.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1749359294853F2FQbuNabouwzVxKPSvcLOzmnV2.png)
 
-![1749359311853Wotpb6o17oqdBExt6LEckgMHnLF.png](https://gitee.com/tanke11223344/imagehost/raw/main/blog/1749359311853Wotpb6o17oqdBExt6LEckgMHnLF.png)
+![1749359311853Wotpb6o17oqdBExt6LEckgMHnLF.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1749359311853Wotpb6o17oqdBExt6LEckgMHnLF.png)
 
 CPU/GPU/NPU 等等都是硬件芯片，简单来说，晶体管既可以用来实现逻辑控制单元， 也可以用来实现运算单元（算力）。 在芯片总面积一定的情况下，就看控制和算力怎么分。
 
@@ -48,9 +48,9 @@ CPU/GPU/NPU 等等都是硬件芯片，简单来说，晶体管既可以用来�
 - 定义：负责执行操作系统及各类应用程序指令，以通用性强、控制流能力强见长。
 - 特点：核心数通常较少（如 4～16 核），内核频率高，善于处理复杂的分支和通用计算任务。
 
-![1749359324854FWMObJX3so9xi5xe9VMcloVunZf.png](https://gitee.com/tanke11223344/imagehost/raw/main/blog/1749359324854FWMObJX3so9xi5xe9VMcloVunZf.png)
-![1749359334854NddybhxCNo9zTuxUlTBcd35vnxf.png](https://gitee.com/tanke11223344/imagehost/raw/main/blog/1749359334854NddybhxCNo9zTuxUlTBcd35vnxf.png)
-![1749359345855XWfSbujSDoQ6AjxMu3gceQJRn1d.png](https://gitee.com/tanke11223344/imagehost/raw/main/blog/1749359345855XWfSbujSDoQ6AjxMu3gceQJRn1d.png)
+![1749359324854FWMObJX3so9xi5xe9VMcloVunZf.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1749359324854FWMObJX3so9xi5xe9VMcloVunZf.png)
+![1749359334854NddybhxCNo9zTuxUlTBcd35vnxf.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1749359334854NddybhxCNo9zTuxUlTBcd35vnxf.png)
+![1749359345855XWfSbujSDoQ6AjxMu3gceQJRn1d.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1749359345855XWfSbujSDoQ6AjxMu3gceQJRn1d.png)
 
 大部分芯片面积都用在了逻辑单元，因此逻辑控制能力强，算力弱（相对 GPU,NPU）。
 
@@ -68,18 +68,18 @@ CPU/GPU/NPU 等等都是硬件芯片，简单来说，晶体管既可以用来�
 
 显卡分为集显,核显和独显
 
-![1749359366853M81rbfVt3oEGeaxj7cYcQlKfnFe.png](https://gitee.com/tanke11223344/imagehost/raw/main/blog/1749359366853M81rbfVt3oEGeaxj7cYcQlKfnFe.png)
-![1749359378854UVDPbCqnto9k8fxRHZiczM2Xnme.png](https://gitee.com/tanke11223344/imagehost/raw/main/blog/1749359378854UVDPbCqnto9k8fxRHZiczM2Xnme.png)
+![1749359366853M81rbfVt3oEGeaxj7cYcQlKfnFe.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1749359366853M81rbfVt3oEGeaxj7cYcQlKfnFe.png)
+![1749359378854UVDPbCqnto9k8fxRHZiczM2Xnme.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1749359378854UVDPbCqnto9k8fxRHZiczM2Xnme.png)
 
 - 定义：最初用于图形渲染，后发展为通用并行计算加速器，具备海量并行计算单元。
 - 特点：拥有数百到上千个计算核心（CUDA 核心、流处理器等），擅长大规模矩阵运算和并行数据处理。
 
-![1749359391853QDjibwrBgopF9vxSohgcOGoRnLh.png](https://gitee.com/tanke11223344/imagehost/raw/main/blog/1749359391853QDjibwrBgopF9vxSohgcOGoRnLh.png)
-![1749359401853EoQpbqAtgokSYrxEGZ3cnS3hnna.png](https://gitee.com/tanke11223344/imagehost/raw/main/blog/1749359401853EoQpbqAtgokSYrxEGZ3cnS3hnna.png)
+![1749359391853QDjibwrBgopF9vxSohgcOGoRnLh.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1749359391853QDjibwrBgopF9vxSohgcOGoRnLh.png)
+![1749359401853EoQpbqAtgokSYrxEGZ3cnS3hnna.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1749359401853EoQpbqAtgokSYrxEGZ3cnS3hnna.png)
 
 大部分芯片面积用在了计算单元，因此并行计算能力强，但逻辑控制弱。 适合图像渲染、矩阵计算之类的并行计算场景。作为协处理器，需要在 CPU 的指挥下工作。
 
-![1749359412854Ct5AbHn4MopusoxweETcLJoXnYc.png](https://gitee.com/tanke11223344/imagehost/raw/main/blog/1749359412854Ct5AbHn4MopusoxweETcLJoXnYc.png)
+![1749359412854Ct5AbHn4MopusoxweETcLJoXnYc.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1749359412854Ct5AbHn4MopusoxweETcLJoXnYc.png)
 
 ### 应用场景
 
@@ -91,7 +91,7 @@ CPU/GPU/NPU 等等都是硬件芯片，简单来说，晶体管既可以用来�
 
 CUDA 是 NVIDIA 推出的并行计算平台与编程模型，允许开发者使用 C/C++（以及其他语言绑定）直接在 GPU 上编写并行代码，将大量浮点与整数运算分配给成百上千个并行执行的 CUDA 核心，从而在深度学习训练、科学计算、图像处理等领域显著提升计算性能。
 
-![1749359428857MbQjb1NEHodtObxEWX7cXdavnQe.png](https://gitee.com/tanke11223344/imagehost/raw/main/blog/1749359428857MbQjb1NEHodtObxEWX7cXdavnQe.png)
+![1749359428857MbQjb1NEHodtObxEWX7cXdavnQe.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1749359428857MbQjb1NEHodtObxEWX7cXdavnQe.png)
 
 在这个框架下，CUDA 就像一座“软件桥梁”：它对上层开发者提供了一套统一的 API，开发者只需在 Python、C++ 中调用相应接口，就能将运算任务提交给 GPU；对下层，CUDA 又会自动将这些高层调用翻译成不同 GPU 架构所需的低阶指令。
 
@@ -107,7 +107,7 @@ ASIC 是指依产品需求不同而定制化的特殊规格集成电路，由特
 
 > [NPU 与超异构计算杂谈 - 吴建明 wujianming - 博客园](https://www.cnblogs.com/wujianming-110117/p/18240352)
 
-![1749359439854BAVzbOB4Goo5lOxgYorcpuHCnXf.png](https://gitee.com/tanke11223344/imagehost/raw/main/blog/1749359439854BAVzbOB4Goo5lOxgYorcpuHCnXf.png)
+![1749359439854BAVzbOB4Goo5lOxgYorcpuHCnXf.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1749359439854BAVzbOB4Goo5lOxgYorcpuHCnXf.png)
 
 - 定义：专为深度学习推理（Inference）设计的专用加速器。
 - 特点：在硬件层面高度优化了矩阵乘加运算、卷积操作，以及常见的神经网络算子，通常集成于 SoC（System-on-Chip）中，拥有极高的能效比。
@@ -140,7 +140,7 @@ TPU：这里特制 Google 的 Tensor Processing Unit，目的跟 NPU 差不多�
 
 大多数当代 CPU 都采用了精简指令集(RISC)。但 Google 选择复杂指令集(CISC)作为 TPU 指令集的基础，这一指令集侧重于运行更复杂的任务。
 
-![1749359477855MLA4btRsFoybvux8t65cel3pnje.png](https://gitee.com/tanke11223344/imagehost/raw/main/blog/1749359477855MLA4btRsFoybvux8t65cel3pnje.png)
+![1749359477855MLA4btRsFoybvux8t65cel3pnje.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1749359477855MLA4btRsFoybvux8t65cel3pnje.png)
 
 TPU 包括以下计算资源：
 
@@ -150,13 +150,13 @@ TPU 包括以下计算资源：
 
 ### 矩阵乘法单元的并行计算
 
-![1749359489852Mu3PbFejZoqWdmxvDQLcvDnAnEe.gif](https://gitee.com/tanke11223344/imagehost/raw/main/blog/1749359489852Mu3PbFejZoqWdmxvDQLcvDnAnEe.gif)
+![1749359489852Mu3PbFejZoqWdmxvDQLcvDnAnEe.gif](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1749359489852Mu3PbFejZoqWdmxvDQLcvDnAnEe.gif)
 
 Google TPU 中通过 MAC 模块进行矩阵乘法的加速，官方给出的加速矩阵乘法运算示意图如上 Google 为其设计了 MXU 作为矩阵处理器，可以在单个时钟周期内处理数十万次运算，也就是矩阵（Matrix）运算。
 
 ### 脉动阵列
 
-![1749359504852Gh9Abp8gToml6TxEiipc6UYKnvb.png](https://gitee.com/tanke11223344/imagehost/raw/main/blog/1749359504852Gh9Abp8gToml6TxEiipc6UYKnvb.png)
+![1749359504852Gh9Abp8gToml6TxEiipc6UYKnvb.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1749359504852Gh9Abp8gToml6TxEiipc6UYKnvb.png)
 
 MXU 有着与传统 CPU、GPU 截然不同的架构，称为脉动阵列（systolic array）。之所以叫“脉动”，是因为在这种结构中，数据一波一波地流过芯片，与心脏跳动供血的方式类似。
 
