@@ -114,10 +114,10 @@ deploy:
 # 分支也有讲究，一般是 master 或者 main
 
 # CDN 配置
-cdn:
-  enable: true
-  js: https://cdn.jsdelivr.net/npm/
-  css: https://cdn.jsdelivr.net/npm/
+# cdn:
+#   enable: true
+#   js: https://cdn.jsdelivr.net/npm/
+#   css: https://cdn.jsdelivr.net/npm/
 mathjax:
   single_dollars: true   # 支持 $...$
   tags: none
