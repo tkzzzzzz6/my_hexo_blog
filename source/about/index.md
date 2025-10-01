@@ -1,9 +1,8 @@
 ---
 title: 关于我
-date: 2025-01-01
+date: 2025-10-01
 layout: page
 ---
-
 # 关于我
 
 你好，我是 TK！
@@ -33,7 +32,7 @@ layout: page
 欢迎通过以下方式与我交流：
 
 - **GitHub**: [tkzzzzzz6](https://github.com/tkzzzzzz6)
-- **邮箱**: [你的邮箱地址]
+- **邮箱**: tk2535550189@gmail.com
 
 ## 本站说明
 

@@ -43,19 +43,31 @@ render_drafts: false       # 是否渲染草稿
 post_asset_folder: false   # 是否为每篇文章使用独立资源文件夹
 relative_link: false       # 是否使用相对链接
 future: true               # 是否显示未来的文章
-syntax_highlighter: prismjs.js # 代码高亮器（可选值：highlight.js 或 prismjs）
+syntax_highlighter: prismjs # 代码高亮器（可选值：highlight.js 或 prismjs）
 # 代码高亮配置
 # 使用 highlight.js 进行代码高亮显示
 highlight:
-  line_number: true      # 显示行号
-  auto_detect: true      # 是否自动检测语言
-  tab_replace: ''        # 制表符替换（空为不替换）
-  wrap: true             # 代码块是否自动换行
-  hljs: false            # 是否使用 highlight.js 默认样式（false 为自定义样式）
+  auto_detect: true
+  line_number: true
+  line_threshold: 0
+  tab_replace: ""
+  exclude_languages:
+    - plaintext
+    - cpp
+    - python
+    - matlab
+    - bash
+    - sh
+    - json
+    - latex
+    - yaml
+  wrap: true
+  hljs: true
 prismjs:
-  preprocess: true       # 是否预处理
-  line_number: true      # 显示行号
-  tab_replace: ''        # 制表符替换
+  preprocess: true
+  line_number: true
+  line_threshold: 0
+  tab_replace: ""
 
 # 首页设置
 # path: 博客首页路径（默认 ''）
