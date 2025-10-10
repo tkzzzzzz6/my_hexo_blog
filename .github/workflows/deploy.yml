@@ -1,0 +1,66 @@
+name: Deploy Hexo to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'source/**'
+      - 'themes/**'
+      - '_config.yml'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pages-deploy-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+
+      - name: Generate deploy config (override repo with token)
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          echo "::add-mask::${GH_TOKEN}"
+          if [ -z "$GH_TOKEN" ]; then
+            echo "GH_TOKEN secret is missing. Create a fine-grained PAT with access to tkzzzzzz6.github.io and add it as GH_TOKEN in this repo secrets." >&2
+            exit 1
+          fi
+          cat > _config.deploy.yml <<EOF
+          deploy:
+            type: git
+            repository: https://x-access-token:${GH_TOKEN}@github.com/tkzzzzzz6/tkzzzzzz6.github.io.git
+            branch: master
+          EOF
+
+      - name: Build
+        run: |
+          npx hexo clean
+          npx hexo generate --config _config.yml,_config.deploy.yml
+
+      - name: Deploy
+        run: npx hexo deploy --config _config.yml,_config.deploy.yml
