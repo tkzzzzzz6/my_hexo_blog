@@ -6,7 +6,7 @@
 title: TK的小站           # 站点标题
 subtitle: ''             # 站点副标题
 description: ''          # 站点描述
-keywords:                # 站点关键词
+keywords: 深度学习,机器学习,Linux               # 站点关键词
 author: tkzzzzzz6        # 作者名称
 language: zh-CN          # 站点语言
 timezone: 'Asia/Shanghai' # 站点时区
