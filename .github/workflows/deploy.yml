@@ -53,7 +53,7 @@ jobs:
           cat > _config.deploy.yml <<EOF
           deploy:
             type: git
-            repository: https://x-access-token:${GH_TOKEN}@github.com/tkzzzzzz6/tkzzzzzz6.github.io.git
+            repository: https://tkzzzzzz6:${GH_TOKEN}@github.com/tkzzzzzz6/tkzzzzzz6.github.io.git
             branch: master
           EOF
 
