@@ -13,7 +13,7 @@ timezone: 'Asia/Shanghai' # 站点时区
 
 # URL 配置
 ## 在这里设置你的网站地址。例如，如果你用 GitHub Page，url 设置为 'https://username.github.io/project'
-url: https://tkzzzzzz6.github.io # 站点网址
+url: https://ke-tan.asia # 站点网址（使用自定义域名）
 permalink: :year/:month/:day/:title/                  # 文章永久链接格式
 permalink_defaults:                                   # 永久链接的默认值
 pretty_urls:
