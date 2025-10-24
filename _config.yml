@@ -146,7 +146,7 @@ deploy:
 
 # hexo-filter-optimize 配置
 filter_optimize:
-  enable: true
+  enable: false
   css:
     enable: false  # 禁用 CSS 合并，避免丢失样式
   js:
