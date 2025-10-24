@@ -61,6 +61,14 @@ jobs:
         run: |
           npx hexo clean
           npx hexo generate --config _config.yml,_config.deploy.yml
-
-      - name: Deploy
-        run: npx hexo deploy --config _config.yml,_config.deploy.yml
+      
+      - name: Publish to external repo
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.GH_TOKEN }}
+          external_repository: tkzzzzzz6/tkzzzzzz6.github.io
+          publish_branch: master
+          publish_dir: ./public
+          keep_files: false
+          force_orphan: false
+          enable_jekyll: false
