@@ -30,7 +30,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '18'
           cache: 'npm'
 
       - name: Install dependencies
@@ -59,6 +59,7 @@ jobs:
 
       - name: Build
         run: |
+          npx hexo clean
           npx hexo generate --config _config.yml,_config.deploy.yml
 
       - name: Deploy
