@@ -1,0 +1,65 @@
+name: Deploy Hexo to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'source/**'
+      - 'themes/**'
+      - '_config.yml'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pages-deploy-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+
+      # hexo-deployer config override removed; we publish via actions-gh-pages
+
+      - name: Build
+        run: |
+          npx hexo clean
+          npx hexo generate
+
+      - name: Sanity check build outputs
+        run: |
+          echo "=== public root ===" && ls -lah public || true
+          echo "=== public/static ===" && ls -lah public/static || true
+      
+      - name: Publish to external repo
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.GH_TOKEN }}
+          external_repository: tkzzzzzz6/tkzzzzzz6.github.io
+          publish_branch: master
+          publish_dir: ./public
+          keep_files: false
+          force_orphan: false
+          enable_jekyll: false

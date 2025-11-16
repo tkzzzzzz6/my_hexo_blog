@@ -39,8 +39,6 @@ tags:
 
 这些方法多对所有细胞“一视同仁”地整合，未利用组学内部的“异质性”信息来引导模型从“易”到“难”分层对齐。
 
-![](static/BegjbomkVoa7Hpx1yEScx3mRn8f.png)
-
 # Method:
 
 ## 异构迁移学习框架概览
@@ -88,12 +86,6 @@ scBridge 将标注的 scRNA-seq 与未标注的 scATAC-seq 数据看作源域与
 - 重装服务器的 conda 环境
 
 ## 运行结果
-
-### umap_PBMC_CellType
-
-### umap_PBMC_Domain
-
-![](static/YzVibvyJhoS3Cexix0AcdNFDn6d.png)
 
 ### umap_PBMC_Reliability
 

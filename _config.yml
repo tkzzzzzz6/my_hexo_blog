@@ -6,14 +6,14 @@
 title: TK的小站           # 站点标题
 subtitle: ''             # 站点副标题
 description: ''          # 站点描述
-keywords:                # 站点关键词
+keywords: 深度学习,机器学习,Linux               # 站点关键词
 author: tkzzzzzz6        # 作者名称
 language: zh-CN          # 站点语言
 timezone: 'Asia/Shanghai' # 站点时区
 
 # URL 配置
 ## 在这里设置你的网站地址。例如，如果你用 GitHub Page，url 设置为 'https://username.github.io/project'
-url: https://tkzzzzzz6.github.io # 站点网址
+url: https://ke-tan.asia # 站点网址（使用自定义域名）
 permalink: :year/:month/:day/:title/                  # 文章永久链接格式
 permalink_defaults:                                   # 永久链接的默认值
 pretty_urls:
@@ -43,19 +43,31 @@ render_drafts: false       # 是否渲染草稿
 post_asset_folder: false   # 是否为每篇文章使用独立资源文件夹
 relative_link: false       # 是否使用相对链接
 future: true               # 是否显示未来的文章
-syntax_highlighter: highlight.js # 代码高亮器
+syntax_highlighter: prismjs # 代码高亮器（可选值：highlight.js 或 prismjs）
 # 代码高亮配置
 # 使用 highlight.js 进行代码高亮显示
 highlight:
-  line_number: true      # 显示行号
-  auto_detect: true      # 是否自动检测语言
-  tab_replace: ''        # 制表符替换（空为不替换）
-  wrap: true             # 代码块是否自动换行
-  hljs: true           # 是否使用 highlight.js 默认样式（false 为自定义样式）
+  auto_detect: true
+  line_number: true
+  line_threshold: 0
+  tab_replace: ""
+  exclude_languages:
+    - plaintext
+    - cpp
+    - python
+    - matlab
+    - bash
+    - sh
+    - json
+    - latex
+    - yaml
+  wrap: true
+  hljs: true
 prismjs:
-  preprocess: true       # 是否预处理
-  line_number: true      # 显示行号
-  tab_replace: ''        # 制表符替换
+  preprocess: true
+  line_number: true
+  line_threshold: 0
+  tab_replace: ""
 
 # 首页设置
 # path: 博客首页路径（默认 ''）
@@ -68,8 +80,22 @@ index_generator:
 
 # 分类与标签
 default_category: uncategorized # 默认分类
-category_map:                   # 分类映射
-tag_map:                        # 标签映射
+category_map:                   # 分类映射（将中文分类映射为 URL 友好的英文名）
+  编程语言: programming
+  深度学习: deep-learning
+  算法学习: algorithm
+  课程学习: course
+  问题解决: troubleshooting
+  数学建模: mathematical-modeling
+  论文阅读: paper-reading
+tag_map:                        # 标签映射（将中文标签映射为 URL 友好的英文名）
+  程序开发: development
+  深度学习: deep-learning
+  算法练习: algorithm-practice
+  算法学习: algorithm
+  课程学习: course
+  问题解决: troubleshooting
+  数学建模: mathematical-modeling
 
 # 元数据元素
 ## https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta
@@ -120,7 +146,7 @@ deploy:
 
 # hexo-filter-optimize 配置
 filter_optimize:
-  enable: true
+  enable: false
   css:
     enable: false  # 禁用 CSS 合并，避免丢失样式
   js:
@@ -150,4 +176,4 @@ live2d:
   mobile:
     show: true
   react:
-    opacity: 0.7
+    opacity: 1
