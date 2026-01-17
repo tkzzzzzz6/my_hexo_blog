@@ -30,7 +30,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '18'
           cache: 'npm'
 
       - name: Install dependencies
@@ -41,25 +41,25 @@ jobs:
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
 
-      - name: Generate deploy config (override repo with token)
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: |
-          echo "::add-mask::${GH_TOKEN}"
-          if [ -z "$GH_TOKEN" ]; then
-            echo "GH_TOKEN secret is missing. Create a fine-grained PAT with access to tkzzzzzz6.github.io and add it as GH_TOKEN in this repo secrets." >&2
-            exit 1
-          fi
-          cat > _config.deploy.yml <<EOF
-          deploy:
-            type: git
-            repository: https://tkzzzzzz6:${GH_TOKEN}@github.com/tkzzzzzz6/tkzzzzzz6.github.io.git
-            branch: master
-          EOF
+      # hexo-deployer config override removed; we publish via actions-gh-pages
 
       - name: Build
         run: |
-          npx hexo generate --config _config.yml,_config.deploy.yml
+          npx hexo clean
+          npx hexo generate
 
-      - name: Deploy
-        run: npx hexo deploy --config _config.yml,_config.deploy.yml
+      - name: Sanity check build outputs
+        run: |
+          echo "=== public root ===" && ls -lah public || true
+          echo "=== public/static ===" && ls -lah public/static || true
+      
+      - name: Publish to external repo
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.GH_TOKEN }}
+          external_repository: tkzzzzzz6/tkzzzzzz6.github.io
+          publish_branch: master
+          publish_dir: ./public
+          keep_files: false
+          force_orphan: false
+          enable_jekyll: false

@@ -2,3 +2,25 @@
 public/
 node_modules/
 db.json
+
+# Obsidian
+.obsidian/workspace.json
+.obsidian/workspaces.json
+.obsidian/themes/*.css
+.obsidian/snippets/
+.obsidian/plugins/*/data.json
+.obsidian/plugins/*/secure-credentials.dat
+.obsidian/plugins/*/conversations.json
+.obsidian
+
+# General Development
+node_modules/
+dist/
+build/
+*.log
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
+venv/
+__pycache__/
