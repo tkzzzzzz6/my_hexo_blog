@@ -8,6 +8,9 @@ tags:
 ---
 
 国内很多租用的深度学习服务器要么无法稳定访问外网，要么访问速度较慢，而国内大模型的一大优势正是在这类环境下更容易调用。通过安装 Claude Code 并将其配置到火山方舟 Coding Plan，我们可以在无需科学上网的情况下，直接通过 Claude Code CLI 调用火山方舟上的最新豆包代码模型，实现文件操作、代码生成等能力：
+
+![1773539930624.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1773539930624.png)
+
 ### 一、前置准备（必须先完成）
 1. **订阅火山方舟Coding Plan**
 访问火山方舟Coding Plan活动页按需订阅套餐（首月最低9.9元，也可先试用免费额度），订阅后才能正常调用模型`(当然,配置Alibaba coding Plan,Kimi coding Plan对应的操作都是类似的,只需要修改base_url和auth_token部分的信息即可`)。
