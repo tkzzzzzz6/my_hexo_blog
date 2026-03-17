@@ -13,7 +13,7 @@ timezone: 'Asia/Shanghai' # 站点时区
 
 # URL 配置
 ## 在这里设置你的网站地址。例如，如果你用 GitHub Page，url 设置为 'https://username.github.io/project'
-url: https://ke-tan.asia # 站点网址（使用自定义域名）
+url: https://tanke.asia # 站点网址（使用自定义域名）
 permalink: :year/:month/:day/:title/                  # 文章永久链接格式
 permalink_defaults:                                   # 永久链接的默认值
 pretty_urls:
@@ -129,7 +129,7 @@ theme: hingle                   # 当前使用的主题
 ## 文档: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git                     # 部署类型
-  repository: git@github.com:tkzzzzzz6/tkzzzzzz6.github.io.git # 仓库地址
+  repository: https://github.com/tkzzzzzz6/tkzzzzzz6.github.io.git # 仓库地址
   branch: master                # 部署分支
   
 # 注意 <git-repository-url> 有两种形式，就是网页上 code 里的 url 下载连接
