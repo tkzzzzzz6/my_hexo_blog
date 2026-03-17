@@ -129,7 +129,7 @@ theme: hingle                   # 当前使用的主题
 ## 文档: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git                     # 部署类型
-  repository: https://github.com/tkzzzzzz6/tkzzzzzz6.github.io.git # 仓库地址
+  repo: git@github.com:tkzzzzzz6/tkzzzzzz6.github.io.git # 仓库地址（SSH）
   branch: master                # 部署分支
   
 # 注意 <git-repository-url> 有两种形式，就是网页上 code 里的 url 下载连接
