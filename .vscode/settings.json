@@ -56,5 +56,6 @@
   "files.associations": {
     "*.ttml": "xml",
     "*.ttss": "css"
-  }
+  },
+  "markdown.preview.fontSize": 11
 }
