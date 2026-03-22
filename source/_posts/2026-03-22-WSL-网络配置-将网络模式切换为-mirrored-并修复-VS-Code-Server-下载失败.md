@@ -25,78 +25,43 @@ Connecting to 127.0.0.1:7890... failed: Connection refused.
 ERROR: Failed to download https://update.code.visualstudio.com/commit:ce099c1ed25d9eb3076c11e4a280f3eb52b4fbeb/server-linux-x64/stable to /root/.vscode-server/bin/ce099c1ed25d9eb3076c11e4a280f3eb52b4fbeb-1774145729.tar.gz
 ```
 
-这篇文章主要回答两个问题：
-
-1. 为什么 WSL 中的 `code .` 会因为 `127.0.0.1:7890` 报错？
-2. 如何把 WSL 网络改成 `mirrored` 模式，让 WSL 可以直接访问 Windows 本机代理？
+这篇文章主要解决一个问题：WSL 在默认网络模式下无法直接访问 Windows 本机代理，导致 `code .` 下载 VS Code Server 失败。对应的修复方法，就是把 WSL 网络切到 `mirrored` 模式。
 
 ---
 
-## 核心概念
+## 问题本质
 
-### 1. `127.0.0.1` 到底指向谁？
+关键点只有一个：`127.0.0.1` 指向的是“当前系统自己”。
 
-很多人第一次遇到这个问题时，直觉上会认为：
+- 在 Windows 里，`127.0.0.1` 指向 Windows
+- 在 WSL 里，`127.0.0.1` 指向 WSL 自己
 
-- Windows 上代理软件监听了 `127.0.0.1:7890`
-- 那么 WSL 里访问 `127.0.0.1:7890` 应该也能通
+因此，在默认 NAT 模式下，WSL 里的 `127.0.0.1:7890` 并不等价于 Windows 上代理软件监听的 `127.0.0.1:7890`。
 
-但实际上并不总是这样。
-
-`127.0.0.1` 永远表示“当前系统自身的回环地址”。
-也就是说：
-
-- 在 Windows 里，`127.0.0.1` 指的是 Windows 自己
-- 在 WSL 里，`127.0.0.1` 指的是 WSL 这个 Linux 环境自己
-
-如果 WSL 还是默认的 NAT 网络模式，那么 Linux 里的 `127.0.0.1` 并不等价于 Windows 的 `127.0.0.1`。
-
-### 2. 报错的真实原因
-
-从日志可以看到关键一句：
+从日志里的这句就能看出来：
 
 ```text
 Connecting to 127.0.0.1:7890... failed: Connection refused.
 ```
 
-这说明 VS Code Server 在下载时走了代理，而且代理地址被设置成了：
-
-```text
-http://127.0.0.1:7890
-```
-
-但当时 WSL 无法访问这个地址，所以连接被拒绝，最终导致 VS Code Server 下载失败。
-
-换句话说，问题不在 `code .`，也不在下载地址本身，而在于：
-
-- WSL 内继承了代理变量
-- 代理地址写成了 `127.0.0.1:7890`
-- 但 WSL 当前网络模式下无法正确访问 Windows 上的本地代理
+这说明 VS Code Server 下载时确实走了代理，但 WSL 当时访问不到这个本地代理地址，所以安装失败。问题不在 `code .` 本身，而在代理路径。
 
 ---
 
 ## 为什么 `mirrored` 模式能解决问题？
 
-WSL 近几个版本引入了 `mirrored` 网络模式。
-它的一个重要意义就是：**让 WSL 和 Windows 主机在本地网络访问上更接近“同机视角”**。
-
-对于代理场景来说，这意味着：
+`mirrored` 模式的核心价值是让 WSL 和 Windows 在本地网络访问上更接近“同机视角”。对本文场景来说，最直接的效果就是：
 
 - Windows 上监听的本地代理端口
-- WSL 中也可以通过 `127.0.0.1` 直接访问
+- WSL 中也能通过 `127.0.0.1` 直接访问
 
-这正好解决了本文里的问题。
-
-简单理解：
-
-- 默认 NAT 模式：WSL 和 Windows 的本地回环并不完全一致
-- `mirrored` 模式：两边的本地访问关系更自然，兼容本机代理、端口监听、局域网联调等场景
+所以，把 WSL 改成 `mirrored` 后，这个问题就能直接消掉。
 
 ---
 
 ## 我的环境检查
 
-在正式修改之前，我先确认了系统是否满足前提条件。
+在正式修改之前，我先确认了环境没有别的问题。
 
 ### 1. WSL 版本
 
@@ -111,12 +76,11 @@ wsl --version
 - WSL: `2.6.3.0`
 - Windows: `10.0.22631.6199`
 
-这说明已经具备使用 `mirrored` 模式的基础条件。
+说明已经具备使用 `mirrored` 模式的前提。
 
 ### 2. 代理端口是否真的在 Windows 上监听
 
-执行检查后，确认 Windows 侧 `7890` 端口确实在监听。
-这一步很重要，因为如果 Windows 代理根本没启动，那么即使改成 `mirrored` 也没有意义。
+确认 Windows 侧 `7890` 端口确实在监听。否则即使切成 `mirrored`，也一样不能用。
 
 ### 3. WSL 内是否继承了代理变量
 
@@ -129,7 +93,7 @@ HTTP_PROXY=http://127.0.0.1:7890
 HTTPS_PROXY=http://127.0.0.1:7890
 ```
 
-这说明 WSL 的下载请求确实被引导到了本地代理端口。
+说明 WSL 的请求确实被引导到了本地代理端口。
 
 ---
 
@@ -141,10 +105,7 @@ WSL 的全局配置文件位于 Windows 用户目录下：
 C:\Users\你的用户名\.wslconfig
 ```
 
-注意这里是：
-
-- Windows 侧的 `.wslconfig`
-- 不是 Linux 里的 `/etc/wsl.conf`
+注意这里改的是 Windows 侧的 `.wslconfig`，不是 Linux 里的 `/etc/wsl.conf`。
 
 我最终采用的配置如下：
 
@@ -161,29 +122,11 @@ autoMemoryReclaim=gradual
 
 ### 配置项说明
 
-#### `networkingMode=mirrored`
-
-这是本文最核心的配置。
-作用是启用 WSL 镜像网络模式，让 WSL 和 Windows 在网络访问上更接近同一主机。
-
-#### `dnsTunneling=true`
-
-启用 DNS 隧道模式。
-在 VPN、代理、复杂 DNS 环境下，通常会比默认方式更稳定。
-
-#### `firewall=true`
-
-让 Windows/Hyper-V 的防火墙规则继续生效。
-一般建议保留开启。
-
-#### `autoProxy=true`
-
-让 WSL 自动感知和继承 Windows 代理设置。
-对需要走系统代理的环境比较方便。
-
-#### `autoMemoryReclaim=gradual`
-
-这个和网络无关，只是保留原来的内存回收配置。
+- `networkingMode=mirrored`：核心配置，让 WSL 可以更自然地访问 Windows 本地网络资源
+- `dnsTunneling=true`：在 VPN、代理、复杂 DNS 环境下通常更稳定
+- `firewall=true`：保留 Windows/Hyper-V 防火墙规则
+- `autoProxy=true`：让 WSL 自动继承 Windows 代理设置
+- `autoMemoryReclaim=gradual`：与网络无关，只是保留原来的内存回收策略
 
 ---
 
@@ -228,7 +171,7 @@ wsl --shutdown
 
 ## 验证过程
 
-改完配置后，我做了三类验证。
+改完配置后，我主要做了三类验证。
 
 ### 1. 验证 WSL 是否能访问本地代理端口
 
@@ -244,12 +187,7 @@ curl -I --max-time 5 http://127.0.0.1:7890
 HTTP/1.1 400 Bad Request
 ```
 
-这里的 `400` 不是错误，反而说明一件关键事情：
-
-- 连接已经打到了代理程序本身
-- 只是因为直接用 HTTP 请求代理端口，不符合代理协议预期，所以返回了 `400`
-
-也就是说，**WSL 到 Windows 代理端口的网络链路已经通了**。
+这里的 `400` 反而说明请求已经打到了代理程序本身，只是请求格式不符合代理协议预期。也就是说，**WSL 到 Windows 代理端口的链路已经通了**。
 
 ### 2. 验证是否能访问 VS Code 更新服务器
 
@@ -259,8 +197,7 @@ HTTP/1.1 400 Bad Request
 curl -I --max-time 15 https://update.code.visualstudio.com
 ```
 
-结果成功返回 `200 Connection established` 和后续 HTTP 响应头。
-这说明 WSL 已经能够通过代理正常访问外网。
+成功返回 `200 Connection established` 和后续 HTTP 响应头，说明 WSL 已经能通过代理访问外网。
 
 ### 3. 验证具体的 VS Code Server 下载地址
 
@@ -270,49 +207,29 @@ curl -I --max-time 15 https://update.code.visualstudio.com
 curl -I --max-time 20 "https://update.code.visualstudio.com/commit:ce099c1ed25d9eb3076c11e4a280f3eb52b4fbeb/server-linux-x64/stable"
 ```
 
-返回了 `302` 跳转，说明：
-
-- 该下载地址本身没有问题
-- 代理链路也已经打通
-- 原来的故障已经被修复
+返回 `302` 跳转，说明下载地址本身没有问题，代理链路也已经恢复正常。
 
 ---
 
 ## 常见误区
 
-### 误区 1：`127.0.0.1` 在 Windows 和 WSL 中天然互通
+### 1. `127.0.0.1` 在 Windows 和 WSL 中天然互通
 
-这是最容易踩的坑。
-默认情况下，WSL 和 Windows 虽然在一台机器上，但它们的回环地址并不总是可以直接等价使用。
+默认情况下并不是。两边虽然在同一台机器上，但回环地址不一定能直接等价使用。
 
-### 误区 2：只要设置了代理环境变量，网络就一定可用
+### 2. 配了代理环境变量就一定能用
 
-不是的。
-代理变量只是在告诉程序“你应该走哪个代理”，并不能保证这个代理地址一定可达。
+也不是。环境变量只是在告诉程序“走哪个代理”，不保证这个代理地址一定可达。
 
-如果程序看到：
+### 3. `curl http://127.0.0.1:7890` 返回 `400` 就说明代理坏了
 
-```bash
-http_proxy=http://127.0.0.1:7890
-```
-
-但这个地址在当前网络模型下无法访问，那么结果就是连接失败。
-
-### 误区 3：`curl` 返回 `400` 就说明代理坏了
-
-对于代理端口来说，这种结论不一定对。
-如果你直接请求代理监听端口，很多代理程序都会返回 `400 Bad Request`。
-这通常意味着：
-
-- 端口已经打通
-- 进程存在并响应了请求
-- 问题不是“连不上”，而是“请求格式不符合代理协议场景”
+未必。对代理端口来说，`400 Bad Request` 往往表示端口已经打通，只是请求格式不对。
 
 ---
 
-## 一套更稳妥的排查思路
+## 排查顺序
 
-如果你以后再遇到类似问题，可以按下面的顺序排查：
+以后再遇到类似问题，可以按这个顺序排查：
 
 ### 1. 看环境变量
 
@@ -320,7 +237,7 @@ http_proxy=http://127.0.0.1:7890
 env | grep -i proxy
 ```
 
-确认程序到底有没有走代理，以及走的是哪个代理。
+先确认程序到底有没有走代理，以及走的是哪个代理。
 
 ### 2. 看 Windows 端口有没有监听
 
@@ -352,28 +269,7 @@ curl -I https://update.code.visualstudio.com
 
 ## 总结
 
-这次问题的本质不是 VS Code Server 安装脚本异常，而是 WSL 中的代理访问路径出了问题。
-
-可以把结论归纳成下面几点：
-
-- `code .` 失败的根因是 WSL 试图通过 `127.0.0.1:7890` 下载 VS Code Server，但当时无法访问这个本地代理
-- 默认 WSL 网络模式下，Linux 中的 `127.0.0.1` 并不一定能直接访问 Windows 的本地代理
-- 将 WSL 改为 `mirrored` 模式后，WSL 可以正常访问 Windows 上的 `127.0.0.1:7890`
-- 配合 `dnsTunneling=true` 和 `autoProxy=true`，代理与 DNS 行为会更稳定
-- 实际测试已经验证：代理端口可连通，VS Code 更新地址可访问，具体 Server 下载地址也已恢复正常
-
-最终配置如下：
-
-```ini
-[wsl2]
-networkingMode=mirrored
-dnsTunneling=true
-firewall=true
-autoProxy=true
-
-[experimental]
-autoMemoryReclaim=gradual
-```
+这次问题的本质不是 VS Code Server 安装脚本异常，而是 WSL 在默认网络模式下访问不到 Windows 本机代理。把 WSL 改成 `mirrored`，再配合 `dnsTunneling=true` 和 `autoProxy=true` 后，代理链路就恢复正常了。实际验证结果也表明：代理端口可访问、VS Code 更新地址可访问、具体 Server 下载链接也能正常返回。
 
 ---
 
