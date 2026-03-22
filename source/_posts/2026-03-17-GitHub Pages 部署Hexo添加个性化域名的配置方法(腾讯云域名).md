@@ -6,6 +6,7 @@ tags:
   - 网站
 categories:
   - 工具配置
+  - 进击的码农
 description: 本文介绍如何为部署在 GitHub Pages 上的 Hexo 博客配置腾讯云个性化域名，包括购买域名、DNS 解析、CNAME 文件及 HTTPS 启用全流程。
 ---
 

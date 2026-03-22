@@ -1,6 +1,8 @@
 ---
 title: 2026-03-22-WSL-网络配置-将网络模式切换为-mirrored-并修复-VS-Code-Server-下载失败
 date: 2026-03-22
+categories:
+  - 我要炼丹,丹没有问题
 tags:
   - WSL
   - Linux

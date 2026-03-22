@@ -1,5 +1,7 @@
 ---
 title: 2026-03-14-Claude Code配置火山方舟Coding Plan（豆包）指南
+categories:
+  - 环境配置
 date: 2026-03-14
 tags:
   - Claude Code
