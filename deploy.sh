@@ -1,2 +1,2 @@
-hexo g && hexo d
+# hexo g && hexo d
 npm run build && npm run deploy
