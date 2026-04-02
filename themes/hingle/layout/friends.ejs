@@ -1,0 +1,40 @@
+<%
+    const friends = Array.isArray(site.data && site.data.friends) ? site.data.friends : [];
+%>
+<main>
+    <div class="wrap min">
+        <section class="page-title">
+            <h2><%= page.title ? page.title : "没有标题的页面" %></h2>
+        </section>
+
+        <!-- 友链展示区 -->
+        <section class="friends-list">
+            <% if (friends.length) { %>
+                <div class="friends-grid">
+                    <% friends.forEach(function(friend) { %>
+                        <% const avatar = friend.avatar || url_for("/static/img/icon.png"); %>
+                        <article class="friend-card">
+                            <a class="friend-card-avatar" href="<%= friend.link %>" target="_blank" rel="noopener noreferrer">
+                                <img src="<%= avatar %>" alt="<%= friend.name %>">
+                            </a>
+                            <h3 class="friend-card-name"><a href="<%= friend.link %>" target="_blank" rel="noopener noreferrer"><%= friend.name %></a></h3>
+                            <% if (friend.desc) { %>
+                                <p class="friend-card-desc"><%- friend.desc %></p>
+                            <% } %>
+                        </article>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <blockquote>还没有添加友链，欢迎来交换链接。</blockquote>
+            <% } %>
+        </section>
+
+        <!-- 页面内容 -->
+        <article class="page-content">
+        <% if (page.date && moment().unix() - page.date.unix() >= 15552000) { %>
+            <blockquote>这篇文章上次修改于 <%= Math.ceil((moment().unix() - page.date.unix()) / 86400) %> 天前，可能其部分内容已经发生变化，如有疑问可询问作者。</blockquote>
+        <% } %>
+            <%- page.content %>
+        </article>
+    </div>
+</main>
