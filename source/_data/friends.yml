@@ -2,10 +2,22 @@
 # 每条友链包含：name(名称)、link(博客地址)、avatar(头像URL)、desc(简介)
 # 修改此文件即可增删友链，无需改模板
 
+
 - name: "叮咚"
   link: "https://blog.csdn.net/2503_91748323?type=blog"
   avatar: "https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/liuge.png"
-  desc: "刘哥<br>博主的本科的战友"
+  desc: "刘哥<br>博主的本科的战友~"
+
+- name: "Izumi"
+  link: "https://blog.csdn.net/2401_84452741?type=blog"
+  avatar: "https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/elen.jpg"
+  desc: "杰哥<br>博主的本科的死党~"
+
+- name: "似水似火"
+  link: "https://blog.csdn.net/2403_87256859?type=blog"
+  avatar: "https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/b_115c208ddb7fed67f564ed2add13e5fc.jpg"
+  desc: "斌涛<br>博主的羽毛球和实训搭子~"
+
   
 # - name: "另一个朋友"
 #   link: "https://friend.example.com"

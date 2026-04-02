@@ -1,6 +1,8 @@
 ---
 title: 2025-05-11-域适应(Domain Adaptation)
 date: 2025-05-11
+categories: 
+  - Papers pile or pie?
 tags: 深度学习
 ---
 # 2025-05-11-域适应(Domain Adaptation)

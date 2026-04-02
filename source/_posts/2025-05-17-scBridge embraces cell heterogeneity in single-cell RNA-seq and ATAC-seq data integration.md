@@ -1,6 +1,8 @@
 ---
 title: 2025-05-17-scBridge
 date: 2025-05-17
+categories: 
+  - Papers pile or pie?
 tags: 
     论文阅读
 ---
