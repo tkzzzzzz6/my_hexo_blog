@@ -28,6 +28,7 @@ menu: # 页眉菜单项目
 config:
   copyright: true # 复制的时候弹出保留原站链接说明
   night: true # 自动切换夜间模式
+  search_engine: bing # 可选: baidu / bing / google
 
 # 备案信息（可选）
 icp:

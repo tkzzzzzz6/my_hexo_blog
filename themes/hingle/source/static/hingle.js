@@ -172,7 +172,7 @@ var Paul_Hingle = function (config) {
     // 如果开启复制内容提示
     if(config.copyright){
         document.oncopy = function () {
-            ks.notice("感谢复制,希望内容对你有所帮助！", {color: "yellow", overlay: true, time: 3000})
+            ks.notice("感谢复制,希望内容对你有所帮助！", {color: "yellow", overlay: true, time: 2000})
         };
     }
 
@@ -187,7 +187,26 @@ var Paul_Hingle = function (config) {
         form.onsubmit = function (ev) {
             ev.preventDefault();
 
-            window.open("https://www.baidu.com/s?wd=site:" + location.host + " " + input.value.trim());
+            var keyword = input.value.trim();
+            if(!keyword){
+                return;
+            }
+
+            var engine = (config.search_engine || "baidu").toLowerCase();
+            var query = "site:" + location.host + " " + keyword;
+            var url = "";
+
+            if(engine === "google"){
+                url = "https://www.google.com/search?q=" + encodeURIComponent(query);
+            }
+            else if(engine === "bing"){
+                url = "https://www.bing.com/search?q=" + encodeURIComponent(query);
+            }
+            else{
+                url = "https://www.baidu.com/s?wd=" + encodeURIComponent(query);
+            }
+
+            window.open(url);
         }
     }
 
