@@ -1,5 +1,5 @@
 ---
-title: 如何在 Hugging Face 下载模型和数据集到本地
+title: 2026-04-05-如何在Hugging Face下载模型和数据集到本地
 categories:
   - 我要炼丹,丹没有问题
 date: 2026-04-05
