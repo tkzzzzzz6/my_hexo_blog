@@ -27,6 +27,12 @@ tmux [new -s 会话名 -n 窗口名]
 tmux at [-t 会话名]
 ```
 
+或者使用
+
+```bash
+tmux a [-t 会话名]
+```
+
 列出所有会话：
 
 ```bash
@@ -219,3 +225,6 @@ set -g @prefix_highlight_show_copy_mode 'on'
 set -g @prefix_highlight_copy_mode_attr 'fg=white,bg=blue'# 初始化 TPM 插件管理器 (放在配置文件的最后)
 run '~/.tmux/plugins/tpm/tpm'# -----------------------------------------------------------------------------# 结束# -----------------------------------------------------------------------------
 ```
+
+可以参考的资料
+https://www.cnblogs.com/zuoruining/p/11074367.html
