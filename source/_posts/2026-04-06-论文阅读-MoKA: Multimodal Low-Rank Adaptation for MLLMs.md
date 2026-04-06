@@ -123,7 +123,7 @@ MoKA 为每个模态设置**独立的投影矩阵 A**，而不是像标准 LoRA 
 ### 可跟进的文献
 1. [LoRA: Low-Rank Adaptation of Large Language Models](https://arxiv.org/abs/2106.09685) - 标准 LoRA 原文，MoKA 的基础。
 2. [Visual Instruction Tuning](https://arxiv.org/abs/2304.08480) - MLLM 指令微调的经典工作。
-3. [Flux.1 [dev] Black Forest Labs](https://blackforestlabs.ai/blog/flux-1/) - 最新的文生图模型也使用了多模态注意力机制来处理文本条件，思路上有共通之处。
+3. [Flux.1 [dev] Black Forest Labs](https://blackforestlabs.ai/blog/flux-1/) - 最近的文生图模型也使用了多模态注意力机制来处理文本条件，思路上有共通之处。
 4. [LoRAMoE: Modality-Aware Mixture of LoRA Experts for Multimodal Adaptation](https://arxiv.org/abs/2406.16185) - 同样是针对多模态场景改进 LoRA 的工作，通过 MoE 架构让不同模态使用不同专家，与 MoKA "让模态分开处理"的核心思想有异曲同工之妙。
 5. [HydraLoRA: Heterogeneous Low-Rank Adaptation for Multi-Task and Multi-Modal Learning](https://arxiv.org/abs/2407.11583) - 另一篇针对多模态/多任务场景的 LoRA 改进工作，探索了不同结构下的参数分配策略，可以对比学习不同的设计思路。
 6. [Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity](https://arxiv.org/abs/2101.03961) - MoE 在大语言模型中应用的经典工作，系统化介绍了如何在 Transformer 中高效使用 Mixture of Experts 架构。
