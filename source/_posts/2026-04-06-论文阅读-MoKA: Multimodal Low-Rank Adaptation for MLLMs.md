@@ -26,7 +26,7 @@ tags:
 ### 研究背景
 近年来，多模态大语言模型（MLLMs）在视觉语言、音频语言等任务上取得了巨大进展。当在多模态下游任务进行微调时，当前主流的多模态微调方法大多直接沿用了在纯文本大语言模型（LLMs）上发展出的微调策略，比如最经典的 LoRA。
 
-研究团队指出：这种简单的“照搬”策略，实际上忽略了多模态场景的本质特性——不同模态之间存在显著的异质性，单模态信息的独立建模和跨模态交互建模同等重要。然而当前的微调范式往往没有并重地显式考量这一点，导致对非文本模态的利用存在潜在局限性。
+这种简单的“照搬”策略，实际上忽略了多模态场景的本质特性——不同模态之间存在显著的异质性，单模态信息的独立建模和跨模态交互建模同等重要。然而当前的微调范式往往没有并重地显式考量这一点，导致对非文本模态的利用存在潜在局限性。
 
 ### 问题定义
 1. **模态竞争问题**：由于文本指令在微调中占据主导地位，共享的 LoRA 参数往往被文本特征“霸占”，导致非文本模态（图像、音频）被边缘化，无法充分发挥其信息价值。
@@ -69,16 +69,27 @@ MoKA 为每个模态设置**独立的投影矩阵 A**，而不是像标准 LoRA 
 ### 2. 核心实验结果
 实验结果一致验证了 MoKA 的有效性：
 ![1775493920134.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1775493920134.png)
+
+![1775518199451.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1775518199451.png)
 - **全面性能提升**：在 MUSIC-AVQA 任务上，相比标准 LoRA 提升了约 **2.3%** 的准确率，在其他场景也都有 consistent 的提升。
 - **参数效率优异**：可训练参数占比仅从标准 LoRA 的 **1.20%** 微增至 **1.33%**，几乎没有额外的参数开销。
 - **推理延迟可控**：推理延迟仅为原来的 **1.069x**，工程性价比极高。
 
 ![MoKA 实验结果](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/moka-results.png)
 
+### 3.变体对比实验
+
+![1775518506597.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1775518506597.png)
+
 ### 3. 消融实验验证
-作者通过详细的消融实验验证了每个组件的必要性：
+
+![1775517878802.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1775517878802.png)
 - 去掉跨模态注意力后，性能出现明显下降 → 证明仅靠独立压缩无法实现深层语义对齐。
 - 模态特异 A 矩阵对性能提升贡献最大 → 验证了解决“模态竞争”问题的重要性。
+
+### 4. 效率分析
+
+![1775517987749.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1775517987749.png)
 
 ## 五、创新点、贡献与改进空间
 
@@ -99,17 +110,20 @@ MoKA 为每个模态设置**独立的投影矩阵 A**，而不是像标准 LoRA 
 
 ## 六、我的思考
 
-1. 这篇论文最大的启发在于：**承认差异，才能更好地融合**。很多时候我们在把单模态领域的方法迁移到多模态时，容易直接“套用模板”，而忽略了多模态本身独特的性质。MoKA 这个工作很好地提醒了我们，针对问题特性做针对性的设计，往往能以极小的成本获得显著的收益。
+1. 论文中的 3 个backbone 都是自回归模型,如果更换 Audio,Visual,Text token的位置,是否会对结果产生影响呢,因为这三种模态的信息密度和 token 数量是不对称的?
 
-2. 参数高效微调（PEFT）仍然是一个非常活跃的研究方向。MoKA 证明了即便是 LoRA 这样非常成熟的方法，在新的场景下仍然有改进空间，这种“小题大做”把问题研究透的做事方式值得学习。
+2. 对于多模态微调来说，融合太早不是一件好事。MoKA 让每个模态先在自己的空间里“管好自己”，再进行交互对齐，这种思路其实在很多领域都适用。
 
-3. 对于多模态微调来说，融合太早不是一件好事。MoKA 让每个模态先在自己的空间里“管好自己”，再进行交互对齐，这种思路其实在很多领域都适用。
+3. 在具身智能场景中，机器人需要处理视觉、触觉、听觉、LiDAR 等多种传感器输入，MoKA 这种对每个模态独立建模的思想非常值得借鉴，未来很有可能在机器人端侧微调中发挥作用。
 
-4. 在具身智能场景中，机器人需要处理视觉、触觉、听觉、LiDAR 等多种传感器输入，MoKA 这种对每个模态独立建模的思想非常值得借鉴，未来很有可能在机器人端侧微调中发挥作用。
+4. 论文中的 X(times) 可以表示倍数,用于运行效率比较实验中
+5. 附录添加了对除了前面提及的 3 种模态,还添加了点云模态的数据集的测试,验证了模型的泛用性
 
 ## 七、其他
 ### 可跟进的文献
 1. [LoRA: Low-Rank Adaptation of Large Language Models](https://arxiv.org/abs/2106.09685) - 标准 LoRA 原文，MoKA 的基础。
 2. [Visual Instruction Tuning](https://arxiv.org/abs/2304.08480) - MLLM 指令微调的经典工作。
 3. [Flux.1 [dev] Black Forest Labs](https://blackforestlabs.ai/blog/flux-1/) - 最新的文生图模型也使用了多模态注意力机制来处理文本条件，思路上有共通之处。
-4. MOE: Mixture of Experts 相关文献，MoKA 的跨模态注意力设计在某种程度上也借鉴了 MOE 的思想，可以参考相关文献了解更多细节。
+4. [LoRAMoE: Modality-Aware Mixture of LoRA Experts for Multimodal Adaptation](https://arxiv.org/abs/2406.16185) - 同样是针对多模态场景改进 LoRA 的工作，通过 MoE 架构让不同模态使用不同专家，与 MoKA "让模态分开处理"的核心思想有异曲同工之妙。
+5. [HydraLoRA: Heterogeneous Low-Rank Adaptation for Multi-Task and Multi-Modal Learning](https://arxiv.org/abs/2407.11583) - 另一篇针对多模态/多任务场景的 LoRA 改进工作，探索了不同结构下的参数分配策略，可以对比学习不同的设计思路。
+6. [Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity](https://arxiv.org/abs/2101.03961) - MoE 在大语言模型中应用的经典工作，系统化介绍了如何在 Transformer 中高效使用 Mixture of Experts 架构。
