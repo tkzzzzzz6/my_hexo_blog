@@ -1,5 +1,5 @@
 ---
-title: 2026-04-06-论文阅读-MoKA: Multimodal Low-Rank Adaptation for MLLMs
+title: 2026-04-06-论文阅读-MoKA-Multimodal Low-Rank Adaptation for MLLMs
 date: 2026-04-06
 categories:
   - Papers pile or pie?
@@ -60,14 +60,13 @@ MoKA 为每个模态设置**独立的投影矩阵 A**，而不是像标准 LoRA 
 ## 四、实验
 
 ### 1. 实验设置
-实验覆盖了三个具有代表性的多模态任务场景，并且在多个主流 LLM 基座上验证了方法的通用性：
+覆盖了三个具有代表性的多模态任务场景，并且在多个主流 LLM 基座上验证了方法的通用性：
 - **音频-视觉-文本**：MUSIC-AVQA 数据集
 - **视觉-文本**：各类视觉问答基准，包括 POPE
 - **语音-文本**：AIR-Bench 数据集
 - **基座模型**：LLaMA 系列、Qwen 系列
 
 ### 2. 核心实验结果
-实验结果一致验证了 MoKA 的有效性：
 ![1775493920134.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1775493920134.png)
 
 ![1775518199451.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1775518199451.png)
