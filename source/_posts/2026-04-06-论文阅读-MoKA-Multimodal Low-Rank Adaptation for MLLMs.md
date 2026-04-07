@@ -53,7 +53,6 @@ MoKA 为每个模态设置**独立的投影矩阵 A**，而不是像标准 LoRA 
 - **核心思想**：在完成独立建模和深度交互后，进行统一的跨模态对齐。
 - **优势**：既保证了前面模块的独立性，又通过参数共享极大地控制了整体参数量，维持了 LoRA 参数高效的优点。
 ![1775493600121.png](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/1775493600121.png)
-![MoKA 整体架构](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/moka-architecture.png)
 
 相比标准 LoRA 对所有模态使用相同的低秩参数，MoKA 通过“**先分流处理 → 后深度交互 → 最后统一对齐**”的三步设计，更好地适配了多模态场景的特性。
 
@@ -73,8 +72,6 @@ MoKA 为每个模态设置**独立的投影矩阵 A**，而不是像标准 LoRA 
 - **全面性能提升**：在 MUSIC-AVQA 任务上，相比标准 LoRA 提升了约 **2.3%** 的准确率，在其他场景也都有 consistent 的提升。
 - **参数效率优异**：可训练参数占比仅从标准 LoRA 的 **1.20%** 微增至 **1.33%**，几乎没有额外的参数开销。
 - **推理延迟可控**：推理延迟仅为原来的 **1.069x**，工程性价比极高。
-
-![MoKA 实验结果](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/moka-results.png)
 
 ### 3.变体对比实验
 
