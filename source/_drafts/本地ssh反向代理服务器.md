@@ -63,3 +63,27 @@ unset http_proxy https_proxy all_proxy
 
 - \[1\] [ssh反向代理](https://cloud.tencent.com/developer/article/1528395)
 - \[2\] [ssh使用正向代理-反向代理](https://www.cnblogs.com/wudonghang/p/48f75dabdefb9500c842dfa456712653.html)
+
+很多时候，我们在本地有稳定的代理，但是在远端服务器上并没有配置代理。这时，我们可能希望远端的服务器能够使用我们本地的代理。为此，我们可以使用linux的反向代理。
+
+反向代理的用法如下：
+
+```bash
+ssh -R <远程端口>:<目标地址>:<目标端口> <user@remote-server>
+```
+
+例如，我们在本地的代理端口是1080，想在远端服务器上开启一个1081端口，并将其反向映射到本地的代理端口1080，可使用命令：
+
+```bash
+ssh -R 1081:localhost:1080 <user@remote-server>
+```
+
+然后在远端服务器上，就可以使用代理了
+
+```bash
+ALL_PROXY=localhost:1081 curl www.google.com
+```
+
+在本地的代理软件上可以看到相应的log
+
+![](https://img2024.cnblogs.com/blog/1077980/202503/1077980-20250306111111419-153545907.png)
