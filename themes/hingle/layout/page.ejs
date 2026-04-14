@@ -1,13 +1,35 @@
 <main>
     <div class="wrap min">
         <section class="page-title">
-            <h2><%= page.title ? page.title : "没有标题的页面" %></h2>
+            <h2>
+                <%= page.title ? page.title : "没有标题的页面" %>
+            </h2>
         </section>
         <article class="page-content">
-        <% if (moment().unix() - page.date.unix() >= 15552000) { %>
-            <blockquote>这篇文章上次修改于 <%= Math.ceil((moment().unix() - page.date.unix()) / 86400) %> 天前，可能其部分内容已经发生变化，如有疑问可询问作者。</blockquote>
-        <% } %>
-            <%- page.content %>
+            <% if (moment().unix() - page.date.unix()>= 15552000) { %>
+                <blockquote>这篇文章上次修改于 <%= Math.ceil((moment().unix() - page.date.unix()) / 86400) %>
+                        天前，可能其部分内容已经发生变化，如有疑问可询问作者。</blockquote>
+                <% } %>
+                    <%- page.content %>
         </article>
+        <% const waline=(theme.waline && theme.waline.enable) ? theme.waline : ((config.waline && config.waline.enable)
+            ? config.waline : null); %>
+            <% if (waline && waline.serverURL) { %>
+                <section class="post-comments">
+                    <div id="waline"></div>
+                </section>
+                <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css" />
+                <script type="module">
+                    import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
+
+                    init({
+                        el: '#waline',
+                        serverURL: '<%= waline.serverURL %>',
+                        path: '<%= page.path %>',
+                        lang: '<%= waline.lang || config.language || "zh-CN" %>',
+                        dark: 'body.dark-theme'
+                    });
+                </script>
+                <% } %>
     </div>
 </main>
