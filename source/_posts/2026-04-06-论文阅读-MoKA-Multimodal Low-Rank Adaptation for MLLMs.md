@@ -115,6 +115,8 @@ MoKA 为每个模态设置**独立的投影矩阵 A**，而不是像标准 LoRA 
 4. 论文中的 X(times) 可以表示倍数,用于运行效率比较实验中
 5. 附录添加了对除了前面提及的 3 种模态,还添加了点云模态的数据集的测试,验证了模型的泛用性
 
+我的论文阅读汇报PPT:[PPT](https://www.canva.cn/design/DAHGKk3yEcE/mJlyJRsC2ehPGj4_DHFVjQ/edit?utm_content=DAHGKk3yEcE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+
 ## 七、其他
 ### 可跟进的文献
 1. [LoRA: Low-Rank Adaptation of Large Language Models](https://arxiv.org/abs/2106.09685) - 标准 LoRA 原文，MoKA 的基础。

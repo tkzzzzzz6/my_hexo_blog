@@ -61,6 +61,10 @@ highlight:
     - json
     - latex
     - yaml
+    - go
+    - java
+    - javascript
+    - rust
   wrap: true
   hljs: true
 prismjs:
@@ -177,3 +181,9 @@ live2d:
     show: true
   react:
     opacity: 1
+
+# Waline 评论配置（Vercel 部署）
+waline:
+  enable: true
+  serverURL: https://api.zcservice.houlang.cloud/comment/6520e9a4fab90b7bde8416fdc44c9290
+  lang: zh-CN

@@ -1,13 +1,79 @@
 <main>
     <div class="wrap min">
         <section class="page-title">
-            <h2><%= page.title ? page.title : "没有标题的页面" %></h2>
+            <h2>
+                <%= page.title ? page.title : "没有标题的页面" %>
+            </h2>
         </section>
         <article class="page-content">
-        <% if (moment().unix() - page.date.unix() >= 15552000) { %>
-            <blockquote>这篇文章上次修改于 <%= Math.ceil((moment().unix() - page.date.unix()) / 86400) %> 天前，可能其部分内容已经发生变化，如有疑问可询问作者。</blockquote>
-        <% } %>
-            <%- page.content %>
+            <% if (moment().unix() - page.date.unix()>= 15552000) { %>
+                <blockquote>这篇文章上次修改于 <%= Math.ceil((moment().unix() - page.date.unix()) / 86400) %>
+                        天前，可能其部分内容已经发生变化，如有疑问可询问作者。</blockquote>
+                <% } %>
+                    <%- page.content %>
         </article>
+        <% const waline=(theme.waline && theme.waline.enable) ? theme.waline : ((config.waline && config.waline.enable)
+            ? config.waline : null); %>
+            <% if (waline && waline.serverURL) { %>
+                <section class="post-comments">
+                    <div id="waline"></div>
+                    <p id="waline-refresh-status" style="display:none;margin-top:10px;font-size:0.92rem;opacity:0.85;"></p>
+                </section>
+                <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css" />
+                <script type="module">
+                    import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
+
+                    const walineServerURL = '<%= waline.serverURL %>';
+                    const walinePath = '<%= page.path %>';
+                    const statusEl = document.getElementById('waline-refresh-status');
+                    const walineInstance = init({
+                        el: '#waline',
+                        serverURL: walineServerURL,
+                        path: walinePath,
+                        lang: '<%= waline.lang || config.language || "zh-CN" %>',
+                        dark: 'body.dark-theme'
+                    });
+
+                    let refreshTimer = 0;
+
+                    const setStatus = (text, hideAfterMs = 0) => {
+                        if (!statusEl) return;
+                        statusEl.textContent = text;
+                        statusEl.style.display = text ? 'block' : 'none';
+                        if (hideAfterMs > 0) {
+                            window.setTimeout(() => {
+                                if (statusEl.textContent === text) {
+                                    statusEl.textContent = '';
+                                    statusEl.style.display = 'none';
+                                }
+                            }, hideAfterMs);
+                        }
+                    };
+
+                    const clearRefreshTimer = () => {
+                        if (refreshTimer) {
+                            window.clearTimeout(refreshTimer);
+                            refreshTimer = 0;
+                        }
+                    };
+
+                    const scheduleRefresh = () => {
+                        clearRefreshTimer();
+                        setStatus('评论已提交，正在刷新列表…');
+                        refreshTimer = window.setTimeout(() => {
+                            walineInstance.update({ path: walinePath });
+                        }, 500);
+                    };
+
+                    const walineRoot = document.querySelector('#waline');
+                    if (walineRoot) {
+                        walineRoot.addEventListener('submit', (event) => {
+                            const form = event.target instanceof HTMLFormElement ? event.target : event.target?.closest?.('form');
+                            if (!form) return;
+                            scheduleRefresh();
+                        }, true);
+                    }
+                </script>
+                <% } %>
     </div>
 </main>
