@@ -1,5 +1,5 @@
 ---
-title: 2025-10-15-python列表推导式与map函数
+title: python列表推导式与map函数
 categories: 
   - 进击的码农
 date: 2025-10-15

@@ -1,5 +1,5 @@
 ---
-title: 2025-05-17-scBridge
+title: scBridge
 date: 2025-05-17
 categories: 
   - Papers pile or pie?

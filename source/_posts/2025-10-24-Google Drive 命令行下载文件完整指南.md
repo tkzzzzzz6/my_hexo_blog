@@ -1,5 +1,5 @@
 ---
-title: 2025-10-24-Google Drive 命令行下载文件完整指南
+title: Google Drive 命令行下载文件完整指南
 date: 2025-10-24
 categories: 
   - 进击的码农  

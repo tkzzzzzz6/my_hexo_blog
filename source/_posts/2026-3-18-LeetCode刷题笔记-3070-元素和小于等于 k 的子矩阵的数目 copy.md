@@ -1,5 +1,5 @@
 ---
-title: 2026-3-18-LeetCode刷题笔记-3070-元素和小于等于 k 的子矩阵的数目
+title: LeetCode刷题笔记-3070-元素和小于等于 k 的子矩阵的数目
 categories:
   - 算法蒟蒻的成长记录
   - LeetCode

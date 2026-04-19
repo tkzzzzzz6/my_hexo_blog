@@ -1,5 +1,5 @@
 ---
-title: 2025-03-28-Tmux(多终端管理器)使用教程
+title: Tmux(多终端管理器)使用教程
 categories: 
   - 环境配置
 date: 2025-03-28

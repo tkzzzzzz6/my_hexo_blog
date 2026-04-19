@@ -1,5 +1,5 @@
 ---
-title: 2026-01-13-论文阅读-AdvancesUavAvionics
+title: 论文阅读-AdvancesUavAvionics
 date: 2026-01-13
 categories: 
   - Papers pile or pie?

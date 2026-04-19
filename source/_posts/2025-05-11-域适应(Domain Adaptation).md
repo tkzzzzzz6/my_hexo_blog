@@ -1,5 +1,5 @@
 ---
-title: 2025-05-11-域适应(Domain Adaptation)
+title: 域适应(Domain Adaptation)
 date: 2025-05-11
 categories: 
   - Papers pile or pie?
