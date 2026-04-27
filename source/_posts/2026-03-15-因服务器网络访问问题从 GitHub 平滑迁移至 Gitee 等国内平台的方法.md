@@ -1,5 +1,5 @@
 ---
-title: 2026-03-15-因服务器网络访问问题从 GitHub 平滑迁移至 Gitee 等国内平台的方法
+title: 因服务器网络访问问题从 GitHub 平滑迁移至 Gitee 等国内平台的方法
 categories:
   - 进击的码农
 date: 2026-03-15

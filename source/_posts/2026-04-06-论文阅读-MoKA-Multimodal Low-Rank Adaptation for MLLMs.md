@@ -1,5 +1,5 @@
 ---
-title: 2026-04-06-论文阅读-MoKA-Multimodal Low-Rank Adaptation for MLLMs
+title: 论文阅读-MoKA-Multimodal Low-Rank Adaptation for MLLMs
 date: 2026-04-06
 categories:
   - Papers pile or pie?

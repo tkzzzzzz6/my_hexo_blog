@@ -1,5 +1,5 @@
 ---
-title: 2026-01-16-Neovim插件-CodeStats配置记录
+title: Neovim插件-CodeStats配置记录
 categories: 
   - 进击的码农
   - 环境配置

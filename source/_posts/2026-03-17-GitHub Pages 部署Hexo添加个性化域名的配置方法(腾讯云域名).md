@@ -1,5 +1,5 @@
 ---
-title: 2026-03-17-GitHub Pages 部署Hexo添加个性化域名的配置方法(腾讯云域名)
+title: GitHub Pages 部署Hexo添加个性化域名的配置方法(腾讯云域名)
 date: 2026-03-17
 tags:
   - GitHub Pages

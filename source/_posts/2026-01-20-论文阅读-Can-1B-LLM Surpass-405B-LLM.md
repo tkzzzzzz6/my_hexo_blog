@@ -1,5 +1,5 @@
 ---
-title: 2026-01-20-论文阅读-Can-1B-LLM Surpass-405B-LLM?
+title: 论文阅读-Can-1B-LLM Surpass-405B-LLM?
 date: 2026-01-20
 categories: 
   - Papers pile or pie?

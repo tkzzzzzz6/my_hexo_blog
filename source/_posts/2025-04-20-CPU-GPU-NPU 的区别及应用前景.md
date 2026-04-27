@@ -1,5 +1,5 @@
 ---
-title:  2025-04-20-CPU-GPU-NPU 的区别及应用前景
+title:  CPU-GPU-NPU 的区别及应用前景
 date: 2025-04-20
 tags: 
     课程学习

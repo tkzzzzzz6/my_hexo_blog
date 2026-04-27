@@ -1,5 +1,5 @@
 ---
-title: 2025-10-18-C++中浮点数取整：floor, ceil与round
+title: C++中浮点数取整：floor, ceil与round
 categories:
   - 算法蒟蒻的成长记录
 date: 2025-10-18
