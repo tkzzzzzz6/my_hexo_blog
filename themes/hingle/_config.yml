@@ -1,6 +1,6 @@
 author: 'ttkqwe' # 作者名称
 author_avatar: 'https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/avator.jpeg' # 作者头像
-author_text: 'BUG 制造机，菜，但爱折腾(¦3[▓▓] zzZ。\n 本站未注明转载的文章均为原创，并采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="nofollow">CC BY-NC-SA 4.0</a> 授权协议，<span style="color: #E91E63">转载请注明来源</span>，谢谢！' # 作者信息
+author_text: 'BUG 制造机，菜，但爱折腾(¦3[▓▓] zzZ。<br> 本站未注明转载的文章均为原创，并采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="nofollow">CC BY-NC-SA 4.0</a> 授权协议，<span style="color: #E91E63">转载请注明来源</span>，谢谢！' # 作者信息
 social: # 社交链接
   - title: 'Github'
     icon: 'github'

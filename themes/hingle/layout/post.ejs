@@ -12,6 +12,9 @@
                     <span class="category"><%- list_categories(page.categories, { show_count: false, class: "" ,
                             style: "none" , separator: "，" }) %></span>
                     <% } %>
+                <span class="word-count">字数：<%= wordcount(page.content) %></span>
+                <span class="reading-time">阅读时间：<%= min2read(page.content) %> 分钟</span>
+                <span class="post-days">已发布 <%= Math.ceil((moment().unix() - page.date.unix()) / 86400) %> 天</span>
             </div>
         </section>
         <article class="post-content">
