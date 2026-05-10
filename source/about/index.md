@@ -13,10 +13,15 @@ layout: page
 
 ## 技术栈
 
-[![My Skills](https://skillicons.dev/icons?i=py,cpp,js,java,pytorch,anaconda,git,docker,raspberrypi,unity,vscode,ubuntu,windows)](https://skillicons.dev)
+
+<p align="center">
+  <a href="https://skillicons.dev">
+    <img src="https://skillicons.dev/icons?i=py,cpp,js,java,pytorch,git,docker,unity,unreal,vscode,linux,windows&perline=6" />
+  </a>
+</p>
 
 - **编程语言**: Python, Java, C++, JavaScript
-- **深度学习**: PyTorch, TensorFlow, OpenCV,Ollama
+- **深度学习**: PyTorch, TensorFlow, OpenCV, Ollama
 - **Web开发**: Next.js, Node.js
 - **数据库**: MySQL, MongoDB,Supabse
 - **其他**: Git, Linux, Docker

@@ -41,23 +41,44 @@
                     <% } %>
                         <%- page.content %>
             </article>
-            <% const waline=(theme.waline && theme.waline.enable) ? theme.waline : ((config.waline &&
-                config.waline.enable) ? config.waline : null); %>
-                <% if (waline && waline.serverURL) { %>
+            <% const giscus=(theme.giscus && theme.giscus.enable) ? theme.giscus : ((config.giscus &&
+                config.giscus.enable) ? config.giscus : null); %>
+                <% if (giscus && giscus.repoId && giscus.repoId !== "YOUR_REPO_ID") { %>
                     <section class="post-comments">
-                        <div id="waline"></div>
+                        <div id="giscus-container"></div>
                     </section>
-                    <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css" />
-                    <script type="module">
-                        import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
+                    <script>
+                        (function() {
+                            function getGiscusTheme() {
+                                return document.body.classList.contains('dark-theme') ? 'dark' : 'light';
+                            }
 
-                        init({
-                            el: '#waline',
-                            serverURL: '<%= waline.serverURL %>',
-                            path: '<%= page.path %>',
-                            lang: '<%= waline.lang || config.language || "zh-CN" %>',
-                            dark: 'body.dark-theme'
-                        });
+                            const giscus = document.createElement('script');
+                            giscus.src = 'https://giscus.app/client.js';
+                            giscus.setAttribute('data-repo', '<%= giscus.repo %>');
+                            giscus.setAttribute('data-repo-id', '<%= giscus.repoId %>');
+                            giscus.setAttribute('data-category', '<%= giscus.category || "Announcements" %>');
+                            giscus.setAttribute('data-category-id', '<%= giscus.categoryId %>');
+                            giscus.setAttribute('data-mapping', '<%= giscus.mapping || "pathname" %>');
+                            giscus.setAttribute('data-reactions-enabled', '<%= giscus.reactionsEnabled !== false ? "1" : "0" %>');
+                            giscus.setAttribute('data-emit-metadata', '<%= giscus.emitMetadata ? "1" : "0" %>');
+                            giscus.setAttribute('data-input-position', '<%= giscus.inputPosition || "top" %>');
+                            giscus.setAttribute('data-lang', '<%= giscus.lang || config.language || "zh-CN" %>');
+                            giscus.setAttribute('data-loading', 'lazy');
+                            giscus.setAttribute('data-theme', getGiscusTheme());
+                            giscus.setAttribute('crossorigin', 'anonymous');
+                            giscus.async = true;
+                            document.getElementById('giscus-container').appendChild(giscus);
+
+                            new MutationObserver(function() {
+                                var frame = document.querySelector('iframe.giscus-frame');
+                                if (frame) {
+                                    frame.contentWindow.postMessage({
+                                        giscus: { setConfig: { theme: getGiscusTheme() } }
+                                    }, 'https://giscus.app');
+                                }
+                            }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+                        })();
                     </script>
                     <% } %>
         </div>

@@ -182,9 +182,16 @@ live2d:
   react:
     opacity: 1
 
-# Waline 评论配置（Vercel 部署）
-waline:
+# Giscus 评论配置（基于 GitHub Discussions）
+giscus:
   enable: true
-  serverURL: https://api.zcservice.houlang.cloud/comment/6520e9a4fab90b7bde8416fdc44c9290
-  # serverURL: https://tanke-waline.asia
+  repo: tkzzzzzz6/my_hexo_blog
+  repoId: "R_kgDOP3Y_BA"
+  category: Announcements
+  categoryId: "DIC_kwDOP3Y_BM4C8sQ1"
+  mapping: pathname
+  reactionsEnabled: true
+  emitMetadata: false
+  inputPosition: top
+  loading: lazy
   lang: zh-CN
