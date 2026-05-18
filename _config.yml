@@ -195,3 +195,10 @@ giscus:
   inputPosition: top
   loading: lazy
   lang: zh-CN
+
+# Feed 配置（RSS & Atom）
+feed:
+  enable: true
+  type: atom
+  path: atom.xml
+  limit: 20
