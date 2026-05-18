@@ -57,5 +57,7 @@
     "*.ttml": "xml",
     "*.ttss": "css"
   },
-  "markdown.preview.fontSize": 11
+  "markdown.preview.fontSize": 11,
+  "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font",
 }
+->
