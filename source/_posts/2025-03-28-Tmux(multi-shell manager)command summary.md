@@ -6,14 +6,13 @@ date: 2025-03-28
 tags: 
     问题解决
 ---
-
-> [Tmux Cheat Sheet & Quick Reference | Session, window, pane and more](https://tmuxcheatsheet.com/)
+> [Tmux Cheat Sheet &amp; Quick Reference | Session, window, pane and more](https://tmuxcheatsheet.com/)
 >
-> [https://www.youtube.com/watch?v=nTqu6w2wc68&ab_channel=NetworkChuck](https://www.youtube.com/watch?v=nTqu6w2wc68&ab_channel=NetworkChuck)(教学视频)
+> [https://www.youtube.com/watch?v=nTqu6w2wc68&amp;ab_channel=NetworkChuck](https://www.youtube.com/watch?v=nTqu6w2wc68&ab_channel=NetworkChuck)(教学视频)
 >
 > [Tmux 使用手册](https://louiszhai.github.io/2017/09/30/tmux/)
 >
-> [Tmux 快捷键 & 速查表 & 简明教程](https://gist.github.com/ryerh/14b7c24dfd623ef8edc7)
+> [Tmux 快捷键 &amp; 速查表 &amp; 简明教程](https://gist.github.com/ryerh/14b7c24dfd623ef8edc7)
 
 启动新会话：
 
@@ -103,7 +102,7 @@ z 切换窗格最大化/最小化
 :setw synchronize-panes
 ```
 
-你可以指定开或关，否则重复执行命令会在两者间切换。 这个选项值针对某个窗口有效，不会影响别的会话和窗口。 完事儿之后再次执行命令来关闭。<u>帮助</u>
+你可以指定开或关，否则重复执行命令会在两者间切换。 这个选项值针对某个窗口有效，不会影响别的会话和窗口。 完事儿之后再次执行命令来关闭。`<u>`帮助`</u>`
 
 ## **调整窗格尺寸**
 
@@ -227,4 +226,13 @@ run '~/.tmux/plugins/tpm/tpm'# -------------------------------------------------
 ```
 
 可以参考的资料
-https://www.cnblogs.com/zuoruining/p/11074367.html
+
+* Tmux 教程：
+
+  * [https://www.acwing.com/blog/content/18141/](https://www.acwing.com/blog/content/18141/)
+  * [https://lzhujian.github.io/post/terminal/2.tmux-tutorial/]()
+  * [https://www.cnblogs.com/zuoruining/p/11074367.htm]()
+* 两个讲解 tmux 非常好的视频
+
+  * [https://www.bilibili.com/video/BV1ML411h7tF](https://www.bilibili.com/video/BV1ML411h7tF)
+  * [https://www.bilibili.com/video/BV1Mj411N7xS](https://www.bilibili.com/video/BV1Mj411N7xS)
