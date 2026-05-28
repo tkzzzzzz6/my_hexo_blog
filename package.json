@@ -23,14 +23,13 @@
     "hexo-generator-index": "^3.0.0",
     "hexo-generator-tag": "^2.0.0",
     "hexo-helper-live2d": "^3.1.1",
-    "hexo-obsidian-callout": "^0.1.4",
     "hexo-renderer-ejs": "^2.0.0",
     "hexo-renderer-marked": "^6.0.0",
     "hexo-renderer-stylus": "^3.0.0",
     "hexo-server": "^3.0.0",
     "hexo-wordcount": "^6.0.1",
-    "live2d-widget-model-miku": "^1.0.5",
-    "live2d-widget-model-shizuku": "^1.0.5",
+    // "live2d-widget-model-miku": "^1.0.5",
+    // "live2d-widget-model-shizuku": "^1.0.5",
     "live2d-widget-model-unitychan": "^1.0.5",
     "live2d-widget-model-z16": "^1.0.5"
   }
