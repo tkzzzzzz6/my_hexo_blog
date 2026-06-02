@@ -31,6 +31,6 @@
     "hexo-wordcount": "^6.0.1",
     "live2d-widget-model-unitychan": "^1.0.5",
     "live2d-widget-model-z16": "^1.0.5",
-    "pnpm": "^11.4.0"
+    "pnpm": "^11.5.1"
   }
 }
