@@ -156,12 +156,6 @@ filter_optimize:
   js:
     enable: true
 
-obsidian_callout:
-  enabled: true
-  injectHead: true
-  cssPath: css/hexo-obsidian-callout.css
-  debug: false
-
 mathjax:
   single_dollars: true   # 支持 $...$
   tags: none
