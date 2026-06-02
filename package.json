@@ -6,6 +6,7 @@
     "build": "node node_modules/hexo/bin/hexo generate",
     "clean": "node node_modules/hexo/bin/hexo clean",
     "deploy": "node node_modules/hexo/bin/hexo deploy",
+    "release": "npm run build && npm run deploy",
     "server": "node node_modules/hexo/bin/hexo server"
   },
   "hexo": {
