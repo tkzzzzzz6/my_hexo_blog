@@ -73,6 +73,14 @@ prismjs:
   line_threshold: 0
   tab_replace: ""
 
+# 多语言代码块 Tab 切换（scripts/code-tabs.js）
+# 把连续写的多个代码块合并成一组 tab，默认显示第一个
+code_tabs:
+  enable: true         # 全局开关，单篇可用 front matter 的 code_tabs: false 关闭
+  merge: true          # 是否自动合并相邻代码块
+  min_blocks: 2        # 少于这个数量的连续块不转成 tab
+  default_label: text  # 代码块没写语言时 tab 上显示的文字
+
 # 首页设置
 # path: 博客首页路径（默认 ''）
 # per_page: 每页显示文章数（0 为不分页）
