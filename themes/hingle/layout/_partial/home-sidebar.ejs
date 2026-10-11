@@ -1,0 +1,64 @@
+<%
+/**
+ * 首页左右侧栏。
+ *
+ * 四个块全部「悬浮」在中间 800px 文章列表之外的空白区域，彼此独立定位，
+ * 互不影响正文宽度。窄屏下整体隐藏，此时页面结构与改动前完全一致。
+ *
+ * 滚动策略（三者不同，不可一刀切）：
+ *   - 最新文章  list_posts() 固定 6 条，永不增长  -> sticky 即可
+ *   - 时光机    每月 +1 条，线性增长              -> 默认只显示 12 条，超出折叠
+ *   - 标签云    增长慢，靠换行控制高度            -> sticky 即可
+ *   - live2d   不增长                            -> fixed（主题原有行为）
+ *
+ * 注意：hexo 的 list_archives 不支持 limit 参数，只能拿到完整 HTML，
+ * 所以这里渲染两次（一次截断、一次完整）再交给前端折叠。
+ */
+const TIMELINE_LIMIT = 12;
+
+const monthList = () => list_archives({
+    show_count: false,
+    type: 'monthly',
+    order_by: '-date'
+});
+
+const fullHtml = monthList();
+
+// 把完整列表切成 <li> 数组，前 12 条直接显示，其余放进「展开更多」
+const items = (fullHtml.match(/<li\b[\s\S]*?<\/li>/g) || []);
+const visible = items.slice(0, TIMELINE_LIMIT);
+const hidden = items.slice(TIMELINE_LIMIT);
+const hasMore = hidden.length > 0;
+
+const wrapList = arr => arr.length
+    ? `<ul class="archive-list">${arr.join('')}</ul>`
+    : '';
+%>
+<div class="home-side home-side-left">
+    <!-- 左上：最新文章 -->
+    <section class="side-card side-recent">
+        <h3 class="side-title"><i class="fa fa-file-text-o"></i>最新文章</h3>
+        <%- list_posts() %>
+    </section>
+
+    <!-- 左下：live2d 看板娘占位，避免侧栏内容压住小人 -->
+    <div class="side-live2d-space"></div>
+</div>
+
+<div class="home-side home-side-right">
+    <!-- 右上：时光机（最近 12 个月，超出折叠） -->
+    <section class="side-card side-timeline">
+        <h3 class="side-title"><i class="fa fa-history"></i>时光机</h3>
+        <%- wrapList(visible) %>
+        <% if (hasMore) { %>
+        <button type="button" class="side-more" aria-expanded="false">展开更多</button>
+        <div class="side-timeline-rest" hidden><%- wrapList(hidden) %></div>
+        <% } %>
+    </section>
+
+    <!-- 右下：标签云 -->
+    <section class="side-card side-tags">
+        <h3 class="side-title"><i class="fa fa-tags"></i>标签云</h3>
+        <%- tagcloud() %>
+    </section>
+</div>

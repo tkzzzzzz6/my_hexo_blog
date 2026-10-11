@@ -3,6 +3,8 @@
         <button class="to-top" href="#"></button>
     </div>
     <div class="wrap min">
+        <%# 首页的「最新文章 / 时光机 / 标签云」已上移到左右侧栏，此处不再重复 %>
+        <% if (!is_home()) { %>
         <section class="widget">
             <div class="row">
                 <div class="col-m-4">
@@ -19,6 +21,7 @@
                 </div>
             </div>
         </section>
+        <% } %>
         <section class="sub-footer">
             <p>
                 © <%= date(new Date, "YYYY") %> <a href="<%= url_for() %>"><%= config.title %></a>. All Rights Reserved. Theme By <a href="https://github.com/Dreamer-Paul/Hingle" target="_blank" rel="nofollow">Hingle</a>.
