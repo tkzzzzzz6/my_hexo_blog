@@ -1,0 +1,94 @@
+/**
+ * hexo-code-tabs 样式
+ *
+ * 主题无关：所有取值走 var(--code-tabs-*, <主题同名字段>, <默认值>) 三级回退。
+ * 主题若定义了 --border / --radius / --blue 等常见变量会自动被采纳，
+ * 没定义也能用默认值正常显示，深色模式下只要主题切换了这些变量即可跟随。
+ */
+
+.code-tabs {
+  --code-tabs-border: var(--code-tabs-border, var(--border, #ddd));
+  --code-tabs-radius: var(--code-tabs-radius, var(--radius, .25em));
+  --code-tabs-bg: var(--code-tabs-bg, var(--light-background, #fff));
+  --code-tabs-accent: var(--code-tabs-accent, var(--blue, #6f9fc7));
+
+  margin: 1em 0;
+}
+
+.code-tabs-bar {
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid var(--code-tabs-border);
+  border-bottom: 0;
+  border-radius: var(--code-tabs-radius) var(--code-tabs-radius) 0 0;
+  background: var(--code-tabs-bg);
+  overflow: hidden;
+}
+
+.code-tabs-tab {
+  margin: 0;
+  padding: .45em 1em;
+  color: inherit;
+  font: inherit;
+  font-size: .9em;
+  cursor: pointer;
+  border: 0;
+  border-right: 1px solid var(--code-tabs-border);
+  background: transparent;
+  transition: background .2s, color .2s;
+}
+
+.code-tabs-tab:last-child {
+  border-right: 0;
+}
+
+.code-tabs-tab:hover {
+  background: color-mix(in srgb, var(--code-tabs-accent) 12%, transparent);
+}
+
+/* 不支持 color-mix 的老浏览器退回半透明遮罩 */
+@supports not (background: color-mix(in srgb, red 10%, transparent)) {
+  .code-tabs-tab:hover {
+    background: rgba(111, 159, 199, .12);
+  }
+}
+
+.code-tabs-tab.is-active {
+  color: #fff;
+  background: var(--code-tabs-accent);
+}
+
+.code-tabs-tab:focus-visible {
+  outline: 2px solid var(--code-tabs-accent);
+  outline-offset: -2px;
+}
+
+.code-tabs-panel[hidden] {
+  display: none;
+}
+
+/* 与常见主题的代码块间距对齐：tab 组内部不额外留白 */
+.code-tabs-body > .code-tabs-panel > pre,
+.code-tabs-body > .code-tabs-panel > figure.highlight,
+.code-tabs-body > .code-tabs-panel > .code-copy-wrap {
+  margin: 0;
+}
+
+.code-tabs-body pre,
+.code-tabs-body figure.highlight {
+  border-radius: 0 0 var(--code-tabs-radius) var(--code-tabs-radius);
+}
+
+@media screen and (max-width: 599px) {
+  .code-tabs-tab {
+    font-size: .82em;
+    padding: .45em .7em;
+  }
+}
+
+/* 尊重系统的减少动效设置 */
+@media (prefers-reduced-motion: reduce) {
+  .code-tabs-tab {
+    transition: none;
+  }
+}
