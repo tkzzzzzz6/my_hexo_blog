@@ -1,0 +1,41 @@
+{
+  "name": "hexo-code-tabs",
+  "version": "0.1.0",
+  "description": "把文章中连续的多个围栏代码块合并成一组可切换的 tab，用于多语言实现对比。不重复实现语法高亮，不依赖 jQuery。",
+  "main": "index.js",
+  "keywords": [
+    "hexo",
+    "hexo-plugin",
+    "code-block",
+    "tabbed",
+    "tabs",
+    "multilingual",
+    "prismjs",
+    "highlight.js"
+  ],
+  "author": "tkzzzzzz6",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tkzzzzzz6/hexo-code-tabs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tkzzzzzz6/hexo-code-tabs/issues"
+  },
+  "homepage": "https://github.com/tkzzzzzz6/hexo-code-tabs#readme",
+  "files": [
+    "index.js",
+    "lib/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node test/run.js"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "peerDependencies": {
+    "hexo": ">=6.0.0"
+  }
+}
