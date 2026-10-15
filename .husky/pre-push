@@ -1,0 +1,56 @@
+#!/usr/bin/env sh
+# 推送前校验：确保 Hexo 站点能被正常构建，避免把坏掉的提交推上去。
+#
+# 为什么不是 `if npm run build` 这么简单：
+#   实测发现 hexo 的退出码不可靠 —— 例如 scripts/*.js 抛异常时，
+#   hexo 会打印 "ERROR Script load failed" 并且 "0 files generated"，
+#   但进程退出码仍然是 0。只看退出码的闸门形同虚设。
+#   因此这里同时检查：退出码 + 输出中的 ERROR/FATAL 关键字。
+#
+# 为什么不是 npm run release：
+#   release = build + deploy，会真的发布到远端；
+#   pre-push 在 push 成功前执行，此时发布是多余且有风险的。
+#
+# 为什么构建命令写在 if 条件里：
+#   husky 用 `sh -e` 调用本脚本（见 .husky/_/h）。若直接写
+#   `npm run build; STATUS=$?`，构建失败时 set -e 会在赋值前就终止脚本，
+#   下面的诊断输出和临时文件清理都会变成死代码。
+#
+# 跳过校验：git push --no-verify
+
+echo "[pre-push] 正在运行 hexo generate 构建校验..."
+
+LOG=$(mktemp)
+trap 'rm -f "$LOG"' EXIT INT TERM
+
+# 用 if/else 而非 `if ! ...`：后者会把 $? 变成取反后的 0，丢掉真实退出码
+if npm run build >"$LOG" 2>&1; then
+  STATUS=0
+else
+  STATUS=$?
+fi
+
+# 剥离 ANSI 颜色码：FORCE_COLOR 等环境下 "ERROR" 会被颜色前缀粘连导致漏检
+ESC=$(printf '\033')
+PLAIN=$(sed -E "s/${ESC}\\[[0-9;]*[A-Za-z]//g" "$LOG")
+
+FAIL=0
+if [ "$STATUS" -ne 0 ]; then
+  FAIL=1
+fi
+if printf '%s\n' "$PLAIN" | grep -qE '(^|[[:space:]])(ERROR|FATAL)([[:space:]]|$)'; then
+  FAIL=1
+fi
+
+if [ "$FAIL" -eq 0 ]; then
+  echo "[pre-push] ✓ 构建通过，继续推送"
+  exit 0
+fi
+
+echo ""
+echo "[pre-push] ✗ 构建校验未通过，已阻止本次 push（退出码=$STATUS）"
+echo "---------- 构建输出 ----------"
+printf '%s\n' "$PLAIN"
+echo "------------------------------"
+echo "修复后重试；确需跳过请使用：git push --no-verify"
+exit 1
