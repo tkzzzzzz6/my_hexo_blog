@@ -24,6 +24,18 @@
                 <% } %>
                     <%- page.content %>
         </article>
+
+        <% if (page.video) { %>
+            <section class="post-video">
+                <h3>
+                    <img src="/static/img/video-icon.svg" alt="" class="video-icon" aria-hidden="true">
+                    相关视频
+                </h3>
+                <div class="video-wrapper">
+                    <%- video_embed(page.video, { autoplay: false, danmaku: false }) %>
+                </div>
+            </section>
+        <% } %>
         <section class="post-near">
             <ul>
                 <% if( page.prev !==undefined) { %>
