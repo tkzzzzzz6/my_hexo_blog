@@ -7,13 +7,15 @@
     "clean": "node node_modules/hexo/bin/hexo clean",
     "deploy": "node node_modules/hexo/bin/hexo deploy",
     "release": "npm run build && npm run deploy",
-    "server": "node node_modules/hexo/bin/hexo server"
+    "server": "node node_modules/hexo/bin/hexo server",
+    "prepare": "husky"
   },
   "hexo": {
     "version": "8.1.1"
   },
   "dependencies": {
     "hexo": "^8.1.1",
+    "hexo-video-embed": "file:./packages/hexo-video-embed",
     "hexo-cli": "^4.3.2",
     "hexo-deployer-git": "^4.0.0",
     "hexo-filter-mathjax": "^0.7.1",
@@ -23,7 +25,8 @@
     "hexo-generator-feed": "^3.0.0",
     "hexo-generator-index": "^3.0.0",
     "hexo-generator-tag": "^2.0.0",
-    "hexo-helper-live2d": "^3.1.1",
+    "hexo-helper-live2d": "^3.1.0",
+    "hexo-obsidian-callout": "^0.1.4",
     "hexo-renderer-ejs": "^2.0.0",
     "hexo-renderer-marked": "^6.0.0",
     "hexo-renderer-stylus": "^3.0.0",
@@ -32,5 +35,8 @@
     "live2d-widget-model-unitychan": "^1.0.5",
     "live2d-widget-model-z16": "^1.0.5",
     "pnpm": "^11.4.0"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7"
   }
 }

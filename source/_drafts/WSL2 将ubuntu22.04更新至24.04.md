@@ -4,7 +4,8 @@ date: 2026-04-28
 tags:
 ---
 
-> [notice] 在ubuntu系统执行
+> [!notice] 
+> 在ubuntu系统执行
 
 先执行
 ```

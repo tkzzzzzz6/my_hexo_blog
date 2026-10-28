@@ -28,6 +28,8 @@
     <title><%= title %></title>
     <%- favicon_tag("static/img/icon.png") %>
     <link rel="icon" href="/static/img/icon.png" sizes="192x192"/>
+    <%# 版本查询参数由 scripts/css-version.js 在 HTML 渲染后统一追加，
+        这里保持最简写法，避免模板里读主题文件导致的环境问题。 %>
     <%- css("static/kico.css", "static/hingle.css") %>
     <%- css("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css") %>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>

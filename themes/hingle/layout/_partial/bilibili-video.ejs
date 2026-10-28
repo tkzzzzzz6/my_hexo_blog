@@ -1,0 +1,27 @@
+<% if (page.video && page.video.trim()) { %>
+<%
+    var videoUrl = page.video.trim();
+    var bvidMatch = videoUrl.match(/BV[0-9A-Za-z]+/);
+    var bvid = bvidMatch ? bvidMatch[0] : '';
+%>
+<% if (bvid) { %>
+<section class="post-video">
+    <h3>📺 视频讲解</h3>
+    <div class="video-wrapper">
+        <iframe
+            src="https://player.bilibili.com/player.html?bvid=<%= bvid %>&page=1&high_quality=1&danmaku=0"
+            scrolling="no"
+            border="0"
+            frameborder="no"
+            framespacing="0"
+            allowfullscreen="true"
+        ></iframe>
+    </div>
+    <p class="video-link">
+        <a href="<%= videoUrl %>" target="_blank" rel="nofollow noopener">
+            在 B 站观看：<%= bvid %>
+        </a>
+    </p>
+</section>
+<% } %>
+<% } %>

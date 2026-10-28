@@ -1,0 +1,25 @@
+{
+  "name": "hexo-video-embed",
+  "version": "1.0.0",
+  "description": "A Hexo plugin to embed videos from Bilibili, YouTube, Douyin, Youku and more platforms.",
+  "main": "index.js",
+  "keywords": [
+    "hexo",
+    "video",
+    "embed",
+    "bilibili",
+    "youtube",
+    "douyin",
+    "youku",
+    "tencent"
+  ],
+  "author": "TK",
+  "license": "MIT",
+  "peerDependencies": {
+    "hexo": ">= 5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourname/hexo-video-embed.git"
+  }
+}
