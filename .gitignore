@@ -26,3 +26,6 @@ venv/
 __pycache__/
 hingle.zip
 # .github/
+
+# Local blog images, generation prompts, and upload records
+/tools/blog-assets/
