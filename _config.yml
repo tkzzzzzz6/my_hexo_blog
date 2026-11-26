@@ -210,3 +210,9 @@ feed:
   type: atom
   path: atom.xml
   limit: 20
+# 每次构建自动更新；单篇文章可用 sitemap: false 排除。
+sitemap:
+  path: sitemap.xml
+  rel: false
+  tags: true
+  categories: true
