@@ -33,12 +33,28 @@ const hasMore = hidden.length > 0;
 const wrapList = arr => arr.length
     ? `<ul class="archive-list">${arr.join('')}</ul>`
     : '';
+
+// 最新文章：过滤掉题解（source/_posts/daily/ 下的文章），与首页正文口径一致。
+// 不能用 list_posts()，那个 helper 不支持过滤；这里手拼与它完全相同的 DOM，
+// 只是把 .post-list-item 的样式原样复用。
+const recentHtml = (() => {
+    const recent = site.posts.filter(post => !is_daily(post)).sort('-date').limit(6);
+    const items = recent.map(post => [
+        '<li class="post-list-item">',
+        `<a class="post-list-link" href="${url_for(post.path)}">`,
+        post.title || post.slug,
+        '</a>',
+        '</li>'
+    ].join('')).join('');
+
+    return `<ul class="post-list">${items}</ul>`;
+})();
 %>
 <div class="home-side home-side-left">
     <!-- 左上：最新文章 -->
     <section class="side-card side-recent">
         <h3 class="side-title"><i class="fa fa-file-text-o"></i>最新文章</h3>
-        <%- list_posts() %>
+        <%- recentHtml %>
     </section>
 
     <!-- 左下：live2d 看板娘占位，避免侧栏内容压住小人 -->
