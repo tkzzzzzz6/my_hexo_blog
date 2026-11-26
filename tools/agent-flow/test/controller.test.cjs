@@ -43,12 +43,16 @@ function fixture(overrides = {}) {
       runs: [{ id: 100, head_sha: pr.head.sha, conclusion: 'success', event: 'pull_request', path: '.github/workflows/pr-checks.yml', pull_requests: [{ number: state.runPrNumber || 9 }] }],
       jobs: [{ name: 'quality', conclusion: state.failed ? 'failure' : 'success' }]
     })[fn.routeName],
-    graphql: async query => query.includes('branchProtectionRule')
-      ? { repository: { ref: { branchProtectionRule: { requiresStrictStatusChecks: true, isAdminEnforced: true, requiresConversationResolution: true, requiredStatusCheckContexts: ['quality', 'agent/policy'] } } } }
-      : { repository: { pullRequest: { reviewThreads: { nodes: state.unresolved ? [{ isResolved: false }] : [], pageInfo: { hasNextPage: false } } } } }
+    graphql: async query => {
+      if (query.includes('branchProtectionRule')) {
+        if (state.protectionDenied) throw new Error('Resource not accessible by integration');
+        return { repository: { ref: { branchProtectionRule: { requiresStrictStatusChecks: true, isAdminEnforced: true, requiresConversationResolution: true, requiredStatusCheckContexts: ['quality', 'agent/policy'] } } } };
+      }
+      return { repository: { pullRequest: { reviewThreads: { nodes: state.unresolved ? [{ isResolved: false }] : [], pageInfo: { hasNextPage: false } } } } };
+    }
   };
   const summary = { addHeading() { return this; }, addRaw() { return this; }, async write() {} };
-  return { github, context: { repo, actor: 'tkzzzzzz6', payload: { pull_request: pr } }, core: { summary }, enabled: true, number: 9, state, pr };
+  return { github, context: { repo, actor: 'tkzzzzzz6', payload: { pull_request: pr } }, core: { summary, warning(message) { state.warning = message; } }, enabled: true, number: 9, state, pr };
 }
 
 test('controller merges a current, checked, protected, low-risk PR at exact SHA', async () => {
@@ -73,6 +77,11 @@ test('diff is tied to immutable base/head and no success is written for a stale 
 });
 test('retargeting the PR after policy evaluation cannot merge another branch', async () => {
   const f = fixture({ retarget: true }); await controller(f); assert.equal(f.state.merges.length, 0);
+});
+test('an inaccessible protection query refuses merge and reports the actual blocker', async () => {
+  const f = fixture({ protectionDenied: true }); await controller(f);
+  assert.equal(f.state.merges.length, 0);
+  assert.match(f.state.warning || '', /Resource not accessible by integration/);
 });
 test('human acceptance rejects unprotected environment and stale SHA', async () => {
   let f = fixture(); await assert.rejects(approve({ ...f, sha: f.pr.head.sha }), /reviewers/);

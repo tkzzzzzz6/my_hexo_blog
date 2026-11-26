@@ -51,7 +51,10 @@ module.exports = async function controller({ github, context, core, enabled = fa
     const protection = result.repository.ref?.branchProtectionRule;
     const required = protection?.requiredStatusCheckContexts || [];
     protectionReady = protection?.requiresStrictStatusChecks === true && protection.isAdminEnforced === true && protection.requiresConversationResolution === true && required.includes('quality') && required.includes('agent/policy');
-  } catch { /* No permission to prove protection: refuse automatic merging. */ }
+  } catch (error) {
+    core.warning(`Cannot prove branch protection; automatic merge refused: ${error.message}`);
+    core.summary.addRaw('\n无法读取并证明分支保护，保留 PR 打开；需要维护者核对受信控制器身份权限。\n');
+  }
 
   let unresolvedThreads = null;
   let cursor = null;
@@ -66,6 +69,7 @@ module.exports = async function controller({ github, context, core, enabled = fa
   for (const review of reviews) if (['APPROVED', 'CHANGES_REQUESTED', 'DISMISSED'].includes(review.state)) latestReviews.set(review.user.login, review.state);
   const changesRequested = [...latestReviews.values()].includes('CHANGES_REQUESTED');
   pr = await getPr();
+  core.summary.addRaw(`\n合并条件：${JSON.stringify({ currentHead: pr.head.sha === sha, currentBase: pr.base.sha === expectedBase.sha && pr.base.ref === expectedBase.ref, mergeState: pr.mergeable_state, quality: quality?.conclusion || 'unavailable', protectionReady, unresolvedThreads, changesRequested })}\n`);
   if (canMerge({ enabled, pr, expectedSha: sha, expectedBase, automatic, quality, unresolvedThreads, changesRequested, protectionReady })) {
     const merged = await github.rest.pulls.merge({ ...repo, pull_number: prNumber, sha, merge_method: 'squash' });
     if (!merged.data.merged) throw new Error('GitHub did not merge the PR');
