@@ -1,0 +1,19 @@
+<%
+/**
+ * 首页列表底部的「每日一题」入口卡。
+ *
+ * 首页正文已经把题解过滤掉了，这里补一个明确的出口，避免读者以为站里没有题解。
+ * 只在第一页显示，避免每翻一页都撞到同一张卡。
+ */
+const dailyCount = site.posts.filter(post => is_daily(post)).length;
+%>
+<% if (dailyCount && page.current === 1) { %>
+<a class="daily-entry" href="<%= url_for('/daily/') %>">
+    <span class="daily-entry-icon"><i class="fa fa-list-alt"></i></span>
+    <span class="daily-entry-text">
+        <strong>每日一题</strong>
+        <em>共 <%= dailyCount %> 篇题解，按月份整理成一份刷题日志</em>
+    </span>
+    <span class="daily-entry-arrow">»</span>
+</a>
+<% } %>

@@ -1,0 +1,202 @@
+<%
+/**
+ * 每日一题索引页（changelog 形态）。
+ *
+ * 数据来源：site.posts 里放在 source/_posts/daily/ 下的文章（判定见 scripts/lib/daily.js）。
+ * 一个问题：file frontmatter 的 date 写法不统一（2026-3-18 / 2026-04-05 13:03:14），
+ * 所以这里一律用 Hexo 解析后的 post.date 分组，绝不按文件名或字符串排序。
+ */
+const dailyPosts = site.posts.filter(post => is_daily(post)).sort('-date').toArray();
+
+// 按「年-月」分组，天然是倒序的
+const groups = [];
+dailyPosts.forEach(post => {
+    const ym = date(post.date, 'YYYY-MM');
+    let group = groups[groups.length - 1];
+    if (!group || group.ym !== ym) {
+        group = { ym, label: date(post.date, 'YYYY 年 MM 月'), posts: [] };
+        groups.push(group);
+    }
+    group.posts.push(post);
+});
+
+// 平台筛选用的计数，按数量倒序
+const platformCounts = {};
+dailyPosts.forEach(post => {
+    const key = post.platform || '其他';
+    platformCounts[key] = (platformCounts[key] || 0) + 1;
+});
+const platforms = Object.keys(platformCounts).sort((a, b) => platformCounts[b] - platformCounts[a]);
+const total = dailyPosts.length;
+
+// 一行内展示用的标签：平台 / 难度 / 题目分类标签（最多两个）
+const rowTags = post => {
+    const tags = [];
+    if (post.platform) tags.push({ text: post.platform, kind: 'platform' });
+    if (post.difficulty) tags.push({ text: post.difficulty, kind: 'difficulty' });
+    (post.tags ? post.tags.toArray() : []).slice(0, 2).forEach(tag => {
+        if (!post.platform || tag.name !== post.platform) tags.push({ text: tag.name, kind: 'tag' });
+    });
+    return tags.slice(0, 4);
+};
+%>
+<main>
+    <div class="wrap min">
+        <section class="page-title">
+            <h2><%= page.title %></h2>
+        </section>
+
+        <section class="daily-tools">
+            <div class="daily-chips" role="group" aria-label="按平台筛选">
+                <button type="button" class="daily-chip is-active" data-platform="all">全部<em><%= total %></em></button>
+                <% platforms.forEach(name => { %>
+                <button type="button" class="daily-chip" data-platform="<%= name %>"><%= name %><em><%= platformCounts[name] %></em></button>
+                <% }) %>
+            </div>
+            <div class="daily-search">
+                <input type="search" id="daily-search" placeholder="搜题目、标签或关键词…" autocomplete="off" aria-label="搜索题目">
+            </div>
+            <p class="daily-count" id="daily-count">共 <%= total %> 题</p>
+        </section>
+
+        <p class="daily-empty" hidden>没有匹配的题目，换个关键词试试？</p>
+
+        <div class="daily-groups" id="daily-groups">
+            <% groups.forEach((group, index) => { %>
+            <section class="daily-month<%= index < 2 ? ' is-open' : '' %>" data-month="<%= group.ym %>">
+                <h3 class="daily-month-title">
+                    <button type="button" class="daily-month-toggle" aria-expanded="<%= index < 2 ? 'true' : 'false' %>">
+                        <span><%= group.label %></span>
+                        <em><%= group.posts.length %> 题</em>
+                    </button>
+                </h3>
+                <ul class="daily-list">
+                    <% group.posts.forEach(post => {
+                        const summary = post.summary || post.description || '';
+                        const searchText = [
+                            post.title,
+                            post.platform || '',
+                            post.difficulty || '',
+                            summary,
+                            (post.tags ? post.tags.toArray() : []).map(tag => tag.name).join(' ')
+                        ].join(' ').toLowerCase();
+                    %>
+                    <li class="daily-item" data-platform="<%= post.platform || '其他' %>" data-text="<%= searchText %>">
+                        <a class="daily-link" href="<%= url_for(post.path) %>">
+                            <time class="daily-date"><%= date(post.date, 'MM-DD') %></time>
+                            <span class="daily-name"><%= post.title %></span>
+                            <span class="daily-tags">
+                                <% rowTags(post).forEach(tag => { %><i class="daily-tag daily-tag-<%= tag.kind %>"><%= tag.text %></i><% }) %>
+                            </span>
+                        </a>
+                        <% if (summary) { %>
+                        <p class="daily-summary"><%= summary %></p>
+                        <% } %>
+                        <% if (post.digest) { %>
+                        <p class="daily-digest">收录于 <a href="<%= url_for(post.digest) %>">归纳专题</a></p>
+                        <% } %>
+                    </li>
+                    <% }) %>
+                </ul>
+            </section>
+            <% }) %>
+        </div>
+
+        <% if (!total) { %>
+        <blockquote>还没有题解。把文章放进 <code>source/_posts/daily/</code> 就会出现在这里。</blockquote>
+        <% } %>
+    </div>
+</main>
+
+<script>
+(function () {
+    const chips = Array.prototype.slice.call(document.querySelectorAll('.daily-chip'));
+    const items = Array.prototype.slice.call(document.querySelectorAll('.daily-item'));
+    const months = Array.prototype.slice.call(document.querySelectorAll('.daily-month'));
+    const searchInput = document.getElementById('daily-search');
+    const countEl = document.getElementById('daily-count');
+    const emptyEl = document.querySelector('.daily-empty');
+    const total = items.length;
+
+    const state = { platform: 'all', keyword: '' };
+
+    // 状态写进 hash，方便把「牛客的二分题」这种筛选直接分享出去
+    function readHash() {
+        const params = new URLSearchParams(location.hash.replace(/^#/, ''));
+        state.platform = params.get('p') || 'all';
+        state.keyword = params.get('q') || '';
+    }
+
+    function writeHash() {
+        const params = new URLSearchParams();
+        if (state.platform !== 'all') params.set('p', state.platform);
+        if (state.keyword) params.set('q', state.keyword);
+        const hash = params.toString();
+        const next = hash ? '#' + hash : location.pathname + location.search;
+        history.replaceState(null, '', next);
+    }
+
+    function render() {
+        const keyword = state.keyword.trim().toLowerCase();
+        let matched = 0;
+
+        items.forEach(function (item) {
+            const platformOk = state.platform === 'all' || item.dataset.platform === state.platform;
+            const keywordOk = !keyword || item.dataset.text.indexOf(keyword) !== -1;
+            const visible = platformOk && keywordOk;
+            item.hidden = !visible;
+            if (visible) matched++;
+        });
+
+        // 月份里一个都不剩就整段收起来，同时更新月份标题上的题数
+        months.forEach(function (month) {
+            const visible = month.querySelectorAll('.daily-item:not([hidden])').length;
+            month.hidden = visible === 0;
+            const counter = month.querySelector('.daily-month-title em');
+            if (counter) counter.textContent = visible + ' 题';
+        });
+
+        chips.forEach(function (chip) {
+            chip.classList.toggle('is-active', chip.dataset.platform === state.platform);
+        });
+
+        const filtering = state.platform !== 'all' || keyword;
+        countEl.textContent = filtering
+            ? '匹配 ' + matched + ' / 共 ' + total + ' 题'
+            : '共 ' + total + ' 题';
+        if (emptyEl) emptyEl.hidden = matched !== 0;
+    }
+
+    chips.forEach(function (chip) {
+        chip.addEventListener('click', function () {
+            state.platform = chip.dataset.platform;
+            writeHash();
+            render();
+        });
+    });
+
+    let timer = null;
+    searchInput.addEventListener('input', function () {
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+            state.keyword = searchInput.value;
+            writeHash();
+            render();
+        }, 120);
+    });
+
+    // 窄屏下月份折叠；默认展开最近两个月（模板里已加 is-open）
+    months.forEach(function (month) {
+        const toggle = month.querySelector('.daily-month-toggle');
+        if (!toggle) return;
+        toggle.addEventListener('click', function () {
+            const open = month.classList.toggle('is-open');
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+    });
+
+    readHash();
+    searchInput.value = state.keyword;
+    render();
+})();
+</script>
