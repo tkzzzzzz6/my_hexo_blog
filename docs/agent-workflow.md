@@ -7,7 +7,7 @@ Issue #34 的约定：维护者决定方向、全局体验与高风险变更；A
 Issue（问题、范围、验收）→ 独立 `codex/issue-N-topic` 分支/worktree → Draft PR → 检查与预览 → 按风险合并 → 经授权部署及线上验证。
 
 - PR 必须关联真实、仍打开的同仓库 Issue：`Fixes #N`。
-- `quality` 包含 ESLint、YAML/JSON/EJS 语法、Node 行为测试、干净 Hexo 构建、非空页面、CNAME 与公式渲染检查。它不等于浏览器视觉验收，不声称检查了所有历史 JS 或外链可用性。
+- `quality` 包含自动化代码 ESLint、YAML/JSON/EJS 语法、本 PR 新增/修改的 JavaScript 语法、Node 行为测试、干净 Hexo 构建、非空页面、CNAME 与公式渲染检查。它不等于浏览器视觉验收，不声称检查了所有历史 JS 或外链可用性。
 - Agent 可自行解决冲突。必须理解两侧意图，记录处理并重跑检查；产品意图冲突交由维护者裁定，不盲目选 ours/theirs。
 - 每个新提交都按新的 head SHA 判定；旧提交通过的检查与批准不能沿用。
 - 界面功能必须补桌面/手机证据，维护者不必逐行审查一般细节。
