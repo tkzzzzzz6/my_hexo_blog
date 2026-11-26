@@ -58,6 +58,7 @@ social: # 社交链接
   #   link: '/index.html'
 background: 'https://api.paugram.com/wallpaper?source=gh' # 主题背景
 menu: # 页眉菜单项目
+  '题解': /daily
   '关于我': /about
   '朋友们': /friends
   '工具推荐': /tools
