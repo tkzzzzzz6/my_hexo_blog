@@ -1,0 +1,23 @@
+name: Change or fix
+description: Define a task that a person or Agent can implement and verify.
+title: '[Task] '
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope and what requires maintainer judgment
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Checkable acceptance criteria
+      description: Include behavior, compatibility and desktop/mobile checks when relevant.
+    validations:
+      required: true
