@@ -15,6 +15,9 @@ on:
 permissions:
   contents: read
 
+env:
+  TZ: Asia/Shanghai
+
 jobs:
   build-deploy:
     # Opt in only after source/main and the live site have been reconciled.
@@ -53,7 +56,7 @@ jobs:
         run: |
           echo "=== public root ===" && ls -lah public || true
           echo "=== public/static ===" && ls -lah public/static || true
-      
+
       - name: Publish to external repo
         uses: peaceiris/actions-gh-pages@329bcc8f12caed2cefe5a5b80781499a6f3b361b # v4
         with:
