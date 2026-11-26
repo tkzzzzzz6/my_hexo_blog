@@ -1,77 +1,56 @@
-# Agent 分级合并与维护者验收
+# Feature 分支内集成与阶段交付
 
-Issue #34 的约定：维护者决定方向、全局体验与高风险变更；Agent 自主处理范围清楚的实现、冲突和低风险合并。默认拒绝不确定情况。
+当前规则由 Issue #57 及维护者后续指令确定：Agent 完成实现、验证并交 PR，维护者在 PR 页面决定并操作合并。取消独立的环境验收与 SHA 输入步骤。
 
-## 1. 日常流程
+## 1. 分支与任务
 
-Issue（问题、范围、验收）→ 独立 `codex/issue-N-topic` 分支/worktree → Draft PR → 检查与预览 → 按风险合并 → 经授权部署及线上验证。
+- 一个阶段使用一个隔离的 `codex/feature/<topic>` 分支，例如 `codex/feature/issue-57-delivery-workflow`。
+- 主 Issue 定义目标与交付范围；子 Issue 和独立提交追踪小任务，默认不为每个任务单独创建 main PR。
+- Agent 在约定范围内实现、集成本地子分支、处理冲突并回归验证。产品意图冲突或范围扩大交维护者判断。
+- 阶段结束只提交一个 feature → main PR。交付后，下一阶段从最新 main 新建分支，避免永久 feature 分支不断积累任务。
 
-- PR 必须关联真实、仍打开的同仓库 Issue：`Fixes #N`。
-- `quality` 包含自动化代码 ESLint、YAML/JSON/EJS 语法、本 PR 新增/修改的 JavaScript 语法、Node 行为测试、干净 Hexo 构建、非空页面、CNAME 与公式渲染检查。它不等于浏览器视觉验收，不声称检查了所有历史 JS 或外链可用性。
-- Agent 可自行解决冲突。必须理解两侧意图，记录处理并重跑检查；产品意图冲突交由维护者裁定，不盲目选 ours/theirs。
-- 每个新提交都按新的 head SHA 判定；旧提交通过的检查与批准不能沿用。
-- 界面功能必须补桌面/手机证据，维护者不必逐行审查一般细节。
-
-## 2. 风险与授权
-
-| 范围 | 合并方式 |
-| --- | --- |
-| README、`docs/guides/` 下 Markdown；最多 4 文件、80 行变更 | 满足所有检查后 Agent 控制器可 squash merge |
-| 一般功能 | 先在默认分支策略中记录 Issue、精确文件清单、截止日期与 diff 上限，再允许控制器处理 |
-| 主题、全局脚本、依赖、策略、工作流、权限、部署、网址规则；删除/重命名/未知文件 | 维护者验收当前 SHA 后手动合并 |
-| 外部 fork、清单不完整、缺少 Issue、检查失败/跳过/过期、未解决审查 | 不自动合并 |
-
-策略在 `.github/agent-policy.json`。一般功能的授权示例（须通过人工审查的策略 PR 合入 main，不能在任务 PR 自授权）：
-
-```json
-{
-  "issue": 123,
-  "paths": ["source/search/index.md", "source/search/search.js"],
-  "expires": "2026-12-31",
-  "maxFiles": 2,
-  "maxLines": 80
-}
+```text
+Issue → Feature 内实现与集成 → lint / 测试 / 构建 → 一个交付 PR
+                                                       ↓
+                                             维护者查看并点击 Merge
 ```
 
-策略的默认总上限仍生效。Issue 合并关闭后不能继续复用。标签、PR 描述中的“已批准”、Agent 自述均不授予权限。没有规则覆盖的代码变更自动升级为人工验收。
+## 2. 分工与交付
 
-## 3. 信任边界
+Agent 自主完成已约定范围内的实现、冲突处理、检查及 feature 提交。最终 PR 关联主 Issue，并说明完成的任务、行为变化、验证结果、兼容性及回退方式；可见改动附桌面和手机预览。
 
-- `pr-checks.yml`：`pull_request`，只读令牌，无部署凭据；检出 GitHub PR 合并结果并执行检查。
-- `agent-control.yml`：默认分支上的 `pull_request_target` / `workflow_run` / 手动重评。只读取默认分支代码和 API 文件清单，不检出 PR、不执行 PR 依赖或 artifact。只有明确开关开启才尝试合并。
-- 控制器同时验证真实 Issue、当前 SHA、`PR checks` 工作流及 `quality` job 成功、严格分支保护、未解决线程和 Request changes。GitHub 合并 API 再以 SHA 锁定当前提交，不使用管理员绕过。
-- `maintainer-approval.yml`：默认分支代码；先经过 `maintainer-approval` 环境的人工批准，再验证环境配置、发起者、PR 和完整 SHA。仅写入 `agent/policy` 状态，不自动合并全局功能。
+Agent 的交付终点是 PR：不调用合并 API，不启用 auto-merge，不直接推送 main。维护者主要审查整体行为、信息架构、交互体验、兼容性及重要配置，并自行操作合并。
 
-**共享管理员账号不构成强权限隔离。** 当前账号能改仓库设置、状态或工作流，因此本方案初期约束正常协作，不能抵御该身份主动绕过。需要强隔离时，维护者保管管理员权限；Agent 使用独立受限 GitHub App/账号，不授予 Administration、Workflows、Commit statuses 写入或保护绕过权限。仓库 CI 的 GitHub Actions 身份与 Agent 的交互身份分开。
+不额外要求维护者去 Actions 运行验收、填写 SHA、审批 Environment 或添加批准标签。普通 PR Review 和评论可以用于反馈，不要求同账号作者完成一次 GitHub 自我 Approve。
 
-GitHub Actions 作为共享检查来源也并非独立审查者。对恶意工作流变更需要更强保证时，使用独立的受信 GitHub App/组织级必需工作流进行策略证明，不把同账号配置宣称为安全沙箱。
+## 3. CI 与 main 保护
 
-## 4. 基础 PR 合并后的启用步骤
+- `PR checks` 在 `codex/feature/**` push、main PR 和手动触发时执行相同的 quality job。
+- quality 包含自动化代码 ESLint、YAML/JSON/EJS、变更 JS 语法、行为测试、干净 Hexo 构建和页面/公式/CNAME 检查。
+- main 要求 quality、严格最新基线及讨论解决；保留管理员约束、禁强推和禁删除。
+- 不再要求 `agent/policy`，删除 Agent policy 与 Maintainer approval 工作流及对应状态写入/审批脚本。
+- PR/feature 检查使用只读令牌且没有部署凭据；合并职责由协作规则和维护者操作承担。共享管理员账号不构成强权限隔离，独立身份仍可通过 #47 后续完善。
 
-本基础设施 PR 自身属高风险，由维护者审查合并。原工作区中未提交的主题/题解/文章不在本 PR。
+新增提交必须重新通过检查；lint 不替代行为测试、实际预览与维护者判断。质量检查继续保留，调整的是额外人工验收步骤。
 
-1. 更新到已审查的 main，运行 `npm ci --ignore-scripts`、`npm run lint:agent`、`npm run test:agent`、`npm run check:build`。
-2. `node tools/agent-flow/setup.cjs` 预览设置；`node tools/agent-flow/setup.cjs --apply` 应用。
-3. 设置脚本创建有指定维护者审核的环境，配置 main 的必需 `quality` 与 `agent/policy` 检查、严格基线、管理员同样受限、讨论解决及禁用强推/删除。个人仓库不强制另一位 PR 审核者人数，人工验收通过环境完成。
-4. 两个变量默认 `false`：`AGENT_AUTO_MERGE`、`SITE_AUTO_DEPLOY`。没有配置时也按 false 处理。
-5. 先开一个真实的低风险文档 PR 验证 `quality` 和 `agent/policy` 结果；再由维护者设置 `AGENT_AUTO_MERGE=true`。必要时手动运行 Agent policy，输入 PR 编号重新评估。
-6. 源码/main 与已上线版本对齐后，才设置 `SITE_AUTO_DEPLOY=true`。当前线上存在未入源码的文章和主题改动，切勿提前打开。
+## 4. 维护者操作
 
-`--apply` 需要维护者本机 `gh` 的管理权限；不会创建或输出任何凭据。重复执行会把自动化开关恢复为 false，便于安全重新检查设置。
+1. 打开阶段 PR，查看说明、改动、测试及必要的预览。
+2. 有问题直接评论，Agent 在同一 feature 分支修改并重新验证。
+3. quality 通过、分支基线满足要求且讨论解决后，维护者点击 Merge（建议 Squash and merge）。
 
-## 5. 如何验收大功能
+没有额外的 Actions 验收步骤。Agent 不代替维护者执行最终合并。
 
-维护者查看 PR 的效果、范围、兼容性和验收结果后，在 Actions → Maintainer approval → Run workflow，输入 PR 编号和完整 head SHA；在环境待审核入口批准这次执行。工作流校验通过会将该提交的 `agent/policy` 置为成功，维护者再执行 squash merge。
+## 5. 设置迁移与发布
 
-新提交需重新验收。尚未安装环境审核规则时，审批脚本拒绝放行，而不是把一个名字相同的无审核环境当作批准。基础 PR 首次合并前主分支没有这些脚本，不能把本 PR 缺失的可信控制器结果冒充为已通过；先由维护者完成引导合并，再安装保护。
+`node tools/agent-flow/setup.cjs` 只预览；合并本流程后，可在更新且干净的 main 使用 `--apply` 安装/复核设置。首次安装要求 quality；复核已有保护时保留其他必需检查和规则，仅移除旧 agent/policy 并确保有 quality，不创建或配置验收环境，不重设 Actions 权限。
 
-## 6. 部署与回退
+针对已有仓库，维护者本次已明确要求取消额外门禁：停用旧 Agent policy / Maintainer approval 工作流，只从 main 的必需状态中移除 agent/policy，保留 quality 和其余保护。旧环境可以保留为无工作流引用的历史配置，无须修改其权限。设置迁移不等于为某个 PR 伪造成功状态或代为合并。
 
-- PR 检查不部署。main 的自动部署需要 `SITE_AUTO_DEPLOY=true`，手动 workflow_dispatch 仍可由维护者显式发布。
-- GITHUB_TOKEN 执行合并通常不会触发后续 push 工作流，因此控制器在自动发布已单独授权时显式 dispatch `deploy.yml`；不会因低风险合并静默跳过已授权的发布。
-- 部署使用 `check:build` 检查日志和产物，避免 Hexo 退出 0 却输出 ERROR 时继续上传。
-- 出问题先关闭 `AGENT_AUTO_MERGE` / `SITE_AUTO_DEPLOY`；用新 PR revert，重跑检查并验证线上页面，不重写 main 历史。
+AGENT_AUTO_MERGE 已退役并保持 false。SITE_AUTO_DEPLOY 是独立发布选择，首次缺失时初始化 false，复核时保留已有选择；feature push 不发布网站。本次不修改发布开关。
 
-## 7. 当前边界
+交付合并与网站上线是两个步骤。发布前确认源码与线上内容对齐；发布后检查文章、链接、图床和 Sitemap。失败时通过新提交或 PR revert，保留历史。
 
-这不是“一切绿灯即正确”的承诺。CI 不判断视觉审美、研究结论和整体信息架构；维护者负责这些全局判断。仓库保护与自动化开关必须在基础 PR 审查合并后启用，独立身份由维护者私下配置。
+## 6. 历史记录
+
+#35 是初版分级自动合并流程；#55 的诊断已归档。#57/#58 最初使用当前 SHA 环境验收，维护者后续明确取消这一额外步骤，改为普通 PR 手动合并。旧控制器/审批测试随退役模块移除；保留并更新质量检查、设置预览、发布选择与只读工作流测试。

@@ -1,6 +1,6 @@
 {
-  "maintainers": ["tkzzzzzz6"],
-  "maxFiles": 4,
-  "maxLines": 80,
-  "authorizations": []
+  "mode": "feature-delivery",
+  "mergeBy": "maintainer",
+  "featurePrefix": "codex/feature/",
+  "deliveryBase": "main"
 }
