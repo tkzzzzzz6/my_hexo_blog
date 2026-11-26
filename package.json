@@ -8,14 +8,16 @@
     "deploy": "node node_modules/hexo/bin/hexo deploy",
     "release": "npm run build && npm run deploy",
     "server": "node node_modules/hexo/bin/hexo server",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lint:agent": "eslint tools/agent-flow eslint.config.cjs && node tools/agent-flow/lint-config.cjs",
+    "test:agent": "node --test tools/agent-flow/test/*.test.cjs",
+    "check:build": "node tools/agent-flow/verify-build.cjs"
   },
   "hexo": {
     "version": "8.1.1"
   },
   "dependencies": {
     "hexo": "^8.1.1",
-    "hexo-video-embed": "file:./packages/hexo-video-embed",
     "hexo-cli": "^4.3.2",
     "hexo-deployer-git": "^4.0.0",
     "hexo-filter-mathjax": "^0.7.1",
@@ -31,12 +33,14 @@
     "hexo-renderer-marked": "^6.0.0",
     "hexo-renderer-stylus": "^3.0.0",
     "hexo-server": "^3.0.0",
+    "hexo-video-embed": "file:./packages/hexo-video-embed",
     "hexo-wordcount": "^6.0.1",
     "live2d-widget-model-unitychan": "^1.0.5",
     "live2d-widget-model-z16": "^1.0.5",
     "pnpm": "^11.4.0"
   },
   "devDependencies": {
+    "eslint": "^9.39.1",
     "husky": "^9.1.7"
   }
 }

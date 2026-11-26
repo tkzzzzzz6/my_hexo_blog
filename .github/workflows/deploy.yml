@@ -17,18 +17,20 @@ permissions:
 
 jobs:
   build-deploy:
+    # Opt in only after source/main and the live site have been reconciled.
+    if: github.event_name == 'workflow_dispatch' || vars.SITE_AUTO_DEPLOY == 'true'
     runs-on: ubuntu-latest
     concurrency:
       group: pages-deploy-${{ github.ref }}
       cancel-in-progress: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '24'
           cache: 'npm'
@@ -45,8 +47,7 @@ jobs:
 
       - name: Build
         run: |
-          npx hexo clean
-          npx hexo generate
+          npm run check:build
 
       - name: Sanity check build outputs
         run: |
@@ -54,7 +55,7 @@ jobs:
           echo "=== public/static ===" && ls -lah public/static || true
       
       - name: Publish to external repo
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@329bcc8f12caed2cefe5a5b80781499a6f3b361b # v4
         with:
           personal_token: ${{ secrets.GH_TOKEN }}
           external_repository: tkzzzzzz6/tkzzzzzz6.github.io
