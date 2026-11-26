@@ -7,6 +7,8 @@ on:
 
 permissions:
   contents: read
+  actions: read
+  pull-requests: read
 
 concurrency:
   group: pr-quality-${{ github.event.pull_request.number || github.ref }}
@@ -20,6 +22,20 @@ jobs:
     env:
       PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
     steps:
+      - name: Read-only merge-gate diagnosis
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea9
+        with:
+          script: |
+            const repo = context.repo;
+            const pr = (await github.rest.pulls.get({...repo,pull_number:52})).data;
+            const runs = await github.paginate(github.rest.actions.listWorkflowRuns,{...repo,workflow_id:'pr-checks.yml',head_sha:pr.head.sha,event:'pull_request',per_page:100});
+            const run = runs.find(r=>r.pull_requests?.some(p=>p.number===52));
+            const jobs = run ? await github.paginate(github.rest.actions.listJobsForWorkflowRun,{...repo,run_id:run.id,filter:'latest',per_page:100}) : [];
+            core.info(JSON.stringify({gate:'quality',mergeState:pr.mergeable_state,run:run&&{head:run.head_sha,conclusion:run.conclusion,event:run.event,path:run.path},jobs:jobs.map(j=>({name:j.name,conclusion:j.conclusion}))}));
+            try {
+              const r=await github.graphql('query($owner:String!,$repo:String!){repository(owner:$owner,name:$repo){ref(qualifiedName:"refs/heads/main"){branchProtectionRule{requiresStrictStatusChecks isAdminEnforced requiresConversationResolution requiredStatusCheckContexts}}}}',{owner:repo.owner,repo:repo.repo});
+              core.info(JSON.stringify({gate:'protection',result:r}));
+            }catch(e){core.info(JSON.stringify({gate:'protection',error:e.message}));}
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
