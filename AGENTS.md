@@ -6,16 +6,17 @@
 - Read CONTRIBUTING.md and docs/agent-workflow.md. Track small tasks in Issues and commits; do not create one main PR per small task.
 - Within the agreed feature scope, Agent may commit small changes, integrate local task branches, resolve conflicts and push the feature branch after verification. Product-intent conflicts or scope expansion go to the maintainer.
 - Resolve conflicts by preserving both intended behaviors. Never choose an entire side blindly; rerun regression checks after integration.
-- At delivery, open ONE feature → main PR with the task summary, tests, previews, compatibility and rollback evidence. All main deliveries require maintainer acceptance, including docs and small features.
-- No direct/force pushes to main. The trusted controller records current-SHA acceptance status only; it never automatically merges main or deploys.
-- Do not bypass protection, forge statuses, dismiss reviews, change authorization, weaken checks or install credentials to obtain a merge.
+- At delivery, open ONE feature → main PR with the task summary, tests, previews, compatibility and rollback evidence. Agent stops at PR handoff; the maintainer decides and performs the merge.
+- No direct/force pushes to main, automatic merge, or enabling PR auto-merge. Do not invoke merge APIs on behalf of the maintainer as part of normal delivery.
+- No separate agent/policy status, protected-environment acceptance, approval label or manual SHA submission is required. Keep quality checks and ordinary PR discussion.
+- Do not bypass protection, forge statuses, dismiss reviews, weaken quality checks or install credentials to obtain a merge. Repository-setting changes require explicit maintainer instruction.
 
 ## Verification
 
 - Node 24; `npm ci --ignore-scripts`, `npm run lint:agent`, `npm run test:agent`, `npm run check:build`.
 - Feature pushes and main delivery PRs run the same quality CI. Keep current-head checks green before handing off.
 - Automation ESLint, YAML/JSON/EJS and changed-JavaScript syntax checks do not replace behavior or visual review. Add behavior coverage and desktop/mobile evidence as appropriate.
-- PR/feature checks have read-only tokens and no deployment credentials. Trusted control workflows load only default-branch code and never execute PR modules, dependencies or artifacts.
+- PR/feature checks have read-only tokens and no deployment credentials. They validate the code and cannot approve or merge the PR.
 
 ## Blog invariants
 

@@ -1,59 +1,56 @@
 # Feature 分支内集成与阶段交付
 
-当前规则由 Issue #57 及维护者明确指令确定，替代 #34 初版的“每个小任务向 main 提 PR”和“自动合并低风险 main PR”。
+当前规则由 Issue #57 及维护者后续指令确定：Agent 完成实现、验证并交 PR，维护者在 PR 页面决定并操作合并。取消独立的环境验收与 SHA 输入步骤。
 
 ## 1. 分支与任务
 
-- 一个阶段使用一个 `codex/feature/<topic>` 分支及隔离 worktree，例如 `codex/feature/issue-57-delivery-workflow`。
-- 主 Issue 定义目标与交付范围；子 Issue 记录独立问题和验收标准，不等于必须创建子 PR。
-- Agent 在约定范围内完成小功能、提交、集成本地子分支和处理冲突。默认不为小任务制造 GitHub PR。
-- 阶段结束才创建一个 feature → main 的汇总 PR。不要维护无限增长的永久 feature 分支；交付后下一阶段从最新 main 新建。
+- 一个阶段使用一个隔离的 `codex/feature/<topic>` 分支，例如 `codex/feature/issue-57-delivery-workflow`。
+- 主 Issue 定义目标与交付范围；子 Issue 和独立提交追踪小任务，默认不为每个任务单独创建 main PR。
+- Agent 在约定范围内实现、集成本地子分支、处理冲突并回归验证。产品意图冲突或范围扩大交维护者判断。
+- 阶段结束只提交一个 feature → main PR。交付后，下一阶段从最新 main 新建分支，避免永久 feature 分支不断积累任务。
 
 ```text
-main ────────────────────────────────── 维护者验收后合并
-   └─ codex/feature/<topic>
-        ├─ 子任务 A：实现 → 测试 → 提交
-        ├─ 子任务 B：实现/集成 → 回归 → 提交
-        └─ 阶段验证 → 一个交付 PR ────────┘
+Issue → Feature 内实现与集成 → lint / 测试 / 构建 → 一个交付 PR
+                                                       ↓
+                                             维护者查看并点击 Merge
 ```
 
-## 2. Agent 与维护者的分工
+## 2. 分工与交付
 
-Agent 自主完成已约定范围内的实现、冲突处理、检查及 feature 提交。全局改动可以在 feature 内准备，但范围扩张、产品意图冲突和不可逆操作仍需维护者决定。
+Agent 自主完成已约定范围内的实现、冲突处理、检查及 feature 提交。最终 PR 关联主 Issue，并说明完成的任务、行为变化、验证结果、兼容性及回退方式；可见改动附桌面和手机预览。
 
-维护者主要审查最终全局行为、信息架构、交互体验、兼容性及高风险配置。进入 main 的交付一律需要维护者验收，文档和小改动也不能自行绕过。
+Agent 的交付终点是 PR：不调用合并 API，不启用 auto-merge，不直接推送 main。维护者主要审查整体行为、信息架构、交互体验、兼容性及重要配置，并自行操作合并。
 
-阶段 PR 正文关联主 Issue，并逐项说明：已完成子任务、行为变化、验证结果、桌面/手机预览、URL/评论兼容性、部署与回退。新提交需要重新检查和当前 SHA 验收。
+不额外要求维护者去 Actions 运行验收、填写 SHA、审批 Environment 或添加批准标签。普通 PR Review 和评论可以用于反馈，不要求同账号作者完成一次 GitHub 自我 Approve。
 
 ## 3. CI 与 main 保护
 
 - `PR checks` 在 `codex/feature/**` push、main PR 和手动触发时执行相同的 quality job。
 - quality 包含自动化代码 ESLint、YAML/JSON/EJS、变更 JS 语法、行为测试、干净 Hexo 构建和页面/公式/CNAME 检查。
-- main 仍要求 quality 与 agent/policy、严格最新基线、讨论解决，并禁止强推/删除及管理员绕过。
-- 可信默认分支控制器仅将当前 main PR 标记为“等待维护者验收”，保留受保护工作流写入的当前 SHA 批准；它没有 merge/部署 API 调用，也不再读取 branchProtectionRule。
-- 控制器权限收窄为 contents/read、pull-requests/read、statuses/write。feature/PR 检查只读且不持有部署凭据，不执行来自 PR 的代码来决定授权。
+- main 要求 quality、严格最新基线及讨论解决；保留管理员约束、禁强推和禁删除。
+- 不再要求 `agent/policy`，删除 Agent policy 与 Maintainer approval 工作流及对应状态写入/审批脚本。
+- PR/feature 检查使用只读令牌且没有部署凭据；合并职责由协作规则和维护者操作承担。共享管理员账号不构成强权限隔离，独立身份仍可通过 #47 后续完善。
 
-默认 Actions 令牌无法读取分支管理详情的旧阻塞因此不再是交付前置条件：规则由 GitHub 服务端和既有保护执行，Agent 不再尝试自动合并 main。没有移除任何 main 必需检查。
+新增提交必须重新通过检查；lint 不替代行为测试、实际预览与维护者判断。质量检查继续保留，调整的是额外人工验收步骤。
 
-## 4. 维护者验收与合并
+## 4. 维护者操作
 
-1. 查看交付 PR 的最终结果和当前 SHA 检查。
-2. Actions → Maintainer approval → Run workflow，输入 PR 编号与完整 head SHA。
-3. 在 maintainer-approval 环境批准这次执行。脚本核对指定维护者、环境审核规则、目标 main 与当前 SHA 后记录 agent/policy 成功。
-4. 维护者合并，或明确授权 Agent 代为合并；使用 SHA 锁定当前提交，不能管理员绕过。
+1. 打开阶段 PR，查看说明、改动、测试及必要的预览。
+2. 有问题直接评论，Agent 在同一 feature 分支修改并重新验证。
+3. quality 通过、分支基线满足要求且讨论解决后，维护者点击 Merge（建议 Squash and merge）。
 
-聊天中的明确验收和代合并授权可以由 Agent 通过正常环境审批/API 留痕执行；这不允许 Agent 在没有维护者同意时替自己批准。共享管理员身份仍然只是协作约束，不是强权限沙箱；真正的身份隔离继续跟踪 #47。
+没有额外的 Actions 验收步骤。Agent 不代替维护者执行最终合并。
 
-## 5. 设置与发布
+## 5. 设置迁移与发布
 
-`node tools/agent-flow/setup.cjs` 预览，合并此流程后在更新且干净的 main 使用 `--apply` 安装/复核既有保护及环境。保留相同的必需检查和人工验收入口。
+`node tools/agent-flow/setup.cjs` 只预览；合并本流程后，可在更新且干净的 main 使用 `--apply` 安装/复核设置。首次安装要求 quality；复核已有保护时保留其他必需检查和规则，仅移除旧 agent/policy 并确保有 quality，不创建或配置验收环境，不重设 Actions 权限。
 
-AGENT_AUTO_MERGE 已退役并保持 false，控制器不再读取该开关。SITE_AUTO_DEPLOY 独立控制发布，首次安装缺失时初始化为 false，复核设置时保留已有选择；feature push 从不发布网站。
+针对已有仓库，维护者本次已明确要求取消额外门禁：停用旧 Agent policy / Maintainer approval 工作流，只从 main 的必需状态中移除 agent/policy，保留 quality 和其余保护。旧环境可以保留为无工作流引用的历史配置，无须修改其权限。设置迁移不等于为某个 PR 伪造成功状态或代为合并。
 
-控制器与维护者审批共用按 PR 编号区分的串行组，避免控制器读取旧状态后将刚批准的 success 覆盖为 pending；等待环境验收的运行不被新事件取消。
+AGENT_AUTO_MERGE 已退役并保持 false。SITE_AUTO_DEPLOY 是独立发布选择，首次缺失时初始化 false，复核时保留已有选择；feature push 不发布网站。本次不修改发布开关。
 
-交付合并和网站上线是两个步骤。发布前确认源码与线上内容对齐；发布后检查文章、链接、图床和 Sitemap。失败时用新提交/PR revert，保留历史，不重写 main。
+交付合并与网站上线是两个步骤。发布前确认源码与线上内容对齐；发布后检查文章、链接、图床和 Sitemap。失败时通过新提交或 PR revert，保留历史。
 
 ## 6. 历史记录
 
-#35 是初版流程；#55 中的旧权限诊断已归入本交付的历史证据，其原自动 main 合并方案被本模式替代。原有测试中允许自动 main 合并的断言，改为覆盖“任何 main 交付均不自动合并”；人工审批、旧 SHA 拒绝、快照变化和工作流权限检查继续保留。
+#35 是初版分级自动合并流程；#55 的诊断已归档。#57/#58 最初使用当前 SHA 环境验收，维护者后续明确取消这一额外步骤，改为普通 PR 手动合并。旧控制器/审批测试随退役模块移除；保留并更新质量检查、设置预览、发布选择与只读工作流测试。

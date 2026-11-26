@@ -1,6 +1,6 @@
 {
-  "maintainers": ["tkzzzzzz6"],
   "mode": "feature-delivery",
+  "mergeBy": "maintainer",
   "featurePrefix": "codex/feature/",
   "deliveryBase": "main"
 }

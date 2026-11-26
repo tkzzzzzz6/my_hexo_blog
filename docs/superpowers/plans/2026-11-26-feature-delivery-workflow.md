@@ -1,5 +1,26 @@
 # Feature Delivery Workflow Implementation Plan
 
+> 维护者后续明确简化：Agent 只交最终 PR，合并由维护者操作；取消 agent/policy 与独立环境审批。下方旧验收控制器记录仅说明迭代过程。
+
+## 当前简化设计与执行计划
+
+**Goal:** 一个阶段一个 feature PR，Agent 完成验证后交付，维护者直接在 PR 页决定合并。
+
+**Architecture:** 保留 feature/PR 的只读 quality CI；移除状态控制器、审批工作流和对应脚本。设置脚本仅要求 quality，不再配置审批环境。按维护者本次指令，通过独立 REST 更新将线上必需检查中的 agent/policy 移除，保留其他规则。
+
+**Approaches:** 维护者已经选择普通 PR 手动合并；保留额外 SHA/环境审批会继续增加操作，不符合本次要求。无需引入新的批准标签或自动合并控制器。
+
+**Constraints:** 不自动合并 #58，不改站点/依赖/发布开关；保留 strict、quality、讨论解决、管理员约束、禁强推和禁删除。复用现有隔离 feature 分支和 #57/#58，不新增交付 PR。
+
+- [x] 增加设置预览的失败测试，证明不再要求额外验收，其他保护保留。
+- [x] 删除退役的控制/审批模块及旧契约测试，更新当前流程文档与设置脚本。
+- [x] 审查修正：setup 复核仅 PATCH 必需检查，保留其他检查、分支保护及 Actions 权限；新增四个先失败后通过的回归测试。
+- [ ] Node 24 下依次运行 npm ci --ignore-scripts、lint、测试、构建与 actionlint。
+- [ ] 提交并推送到当前 feature，更新 #57/#58 的最终描述。
+- [ ] 根据维护者本次指令停用旧控制/审批工作流，只移除线上 agent/policy 必需状态；核对其余保护与当前 SHA CI。
+
+---
+
 > Execute task by task in the existing isolated feature worktree. Issue #57 records the maintainer's revised scope.
 
 **Goal:** Agent 在 feature 分支内集成子任务，阶段结束只提交一个 main PR。

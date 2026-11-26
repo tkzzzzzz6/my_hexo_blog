@@ -11,25 +11,18 @@ test('feature pushes and main delivery PRs run the same quality gate', () => {
   assert.equal(flow.permissions.contents, 'read');
   assert.equal(flow.jobs.quality.name, 'quality');
 });
-test('main status controller has no merge or deploy permissions or automation switches', () => {
-  const flow = load('agent-control');
-  assert.equal(flow.permissions.contents, 'read');
-  assert.equal(flow.permissions['pull-requests'], 'read');
-  assert.equal(flow.permissions.statuses, 'write');
-  assert.equal(flow.permissions.actions, undefined);
-  const raw = fs.readFileSync('.github/workflows/agent-control.yml', 'utf8');
-  assert.equal(raw.includes('AGENT_AUTO_MERGE'), false);
-  assert.equal(raw.includes('AUTO_DEPLOY'), false);
+test('repository workflows cannot merge PRs or write approval statuses', () => {
+  for (const file of fs.readdirSync('.github/workflows').filter(name => /\.ya?ml$/.test(name))) {
+    const flow = yaml.load(fs.readFileSync(`.github/workflows/${file}`, 'utf8'));
+    assert.equal(flow.permissions.contents, 'read', file);
+    for (const permissions of [flow.permissions, ...Object.values(flow.jobs).map(job => job.permissions).filter(Boolean)]) {
+      assert.notEqual(permissions, 'write-all', file);
+      for (const key of ['contents', 'pull-requests', 'statuses']) assert.notEqual(permissions[key], 'write', `${file}: ${key}`);
+    }
+  }
 });
 test('deployment remains main-only and independently opted in', () => {
   const flow = load('deploy');
   assert.deepEqual(flow.on.push.branches, ['main']);
   assert.match(flow.jobs['build-deploy'].if, /SITE_AUTO_DEPLOY/);
-});
-test('status evaluation and protected approval serialize per PR without cancellation', () => {
-  const control = load('agent-control'), approval = load('maintainer-approval');
-  assert.equal(control.concurrency.group, 'main-delivery-${{ github.event.pull_request.number || inputs.pr }}');
-  assert.equal(control.concurrency.group, approval.concurrency.group);
-  assert.equal(control.concurrency['cancel-in-progress'], false);
-  assert.equal(approval.concurrency['cancel-in-progress'], false);
 });
