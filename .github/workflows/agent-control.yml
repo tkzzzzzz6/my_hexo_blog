@@ -4,9 +4,6 @@ on:
   pull_request_target:
     branches: [main]
     types: [opened, reopened, synchronize, ready_for_review, edited]
-  workflow_run:
-    workflows: [PR checks]
-    types: [completed]
   workflow_dispatch:
     inputs:
       pr:
@@ -15,10 +12,9 @@ on:
         type: number
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+  pull-requests: read
   statuses: write
-  actions: write
 
 concurrency:
   group: agent-policy-controller
@@ -36,14 +32,10 @@ jobs:
           persist-credentials: false
       - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea9 # v7.0.1
         env:
-          AUTO_MERGE: ${{ vars.AGENT_AUTO_MERGE }}
           DISPATCH_PR: ${{ inputs.pr }}
-          AUTO_DEPLOY: ${{ vars.SITE_AUTO_DEPLOY }}
         with:
           script: |
-            const numbers = context.payload.workflow_run
-              ? context.payload.workflow_run.pull_requests.map(pr => pr.number)
-              : [context.payload.pull_request?.number || Number(process.env.DISPATCH_PR)];
+            const numbers = [context.payload.pull_request?.number || Number(process.env.DISPATCH_PR)];
             for (const number of numbers.filter(Boolean)) {
-              await require('./tools/agent-flow/controller.cjs')({github, context, core, number, enabled: process.env.AUTO_MERGE === 'true'});
+              await require('./tools/agent-flow/controller.cjs')({github, context, core, number});
             }

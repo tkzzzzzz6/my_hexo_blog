@@ -19,11 +19,11 @@ const protection = {
   allow_deletions: false
 };
 if (!process.argv.includes('--apply')) {
-  console.log(JSON.stringify({ repository, protection, environment: 'maintainer-approval', reviewers: policy.maintainers, AGENT_AUTO_MERGE: false, SITE_AUTO_DEPLOY: false, note: 'Preview only. After the foundation PR is merged, run --apply from updated main.' }, null, 2));
+  console.log(JSON.stringify({ repository, mode: 'feature-delivery', featurePrefix: policy.featurePrefix, protection, environment: 'maintainer-approval', reviewers: policy.maintainers, AGENT_AUTO_MERGE: false, SITE_AUTO_DEPLOY: false, note: 'Preview only. After the foundation PR is merged, run --apply from updated main.' }, null, 2));
 } else {
   if (execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' }).trim()) throw new Error('Use a clean, reviewed checkout');
   const head = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
-  const remoteHead = execFileSync('git', ['ls-remote', 'origin', 'refs/heads/main'], { encoding: 'utf8' }).split(/\s+/)[0];
+  const remoteHead = api(`repos/${repository}/commits/main`).sha;
   if (head !== remoteHead) throw new Error('Use the current remote main commit');
   const remotePolicy = api(`repos/${repository}/contents/.github/agent-policy.json?ref=main`);
   const remote = JSON.parse(Buffer.from(remotePolicy.content, 'base64').toString('utf8'));
@@ -38,5 +38,5 @@ if (!process.argv.includes('--apply')) {
     try { api(`repos/${repository}/actions/variables/${name}`); exists = true; } catch { /* create a missing variable */ }
     api(`repos/${repository}/actions/variables${exists ? '/' + name : ''}`, exists ? 'PATCH' : 'POST', { name, value: 'false' });
   }
-  console.log('Guardrails installed. Automatic merge/deploy remain off until their documented checks are complete.');
+  console.log('Guardrails installed. Main delivery requires maintainer review; automatic deployment remains a separate opt-in.');
 }
