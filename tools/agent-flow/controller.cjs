@@ -13,7 +13,10 @@ module.exports = async function controller({ github, context, core, enabled = fa
   let pr = await getPr();
   if (pr.state !== 'open' || pr.base.ref !== 'main') return;
   const sha = pr.head.sha;
-  const files = await github.paginate(github.rest.pulls.listFiles, { ...repo, pull_number: prNumber, per_page: 100 });
+  const expectedBase = { ref: pr.base.ref, sha: pr.base.sha, repository: pr.base.repo.full_name };
+  // Compare immutable commits, not a moving PR file list (max 300 files in API).
+  const comparison = await github.rest.repos.compareCommitsWithBasehead({ ...repo, basehead: `${expectedBase.sha}...${sha}`, per_page: 1 });
+  const files = comparison.data.files || [];
   const decision = files.length === pr.changed_files ? classify(pr, files, policy) : { automatic: false, reason: '文件清单不完整', issues: [] };
   let issueValid = decision.issues.length > 0;
   for (const issue_number of decision.issues) {
@@ -24,6 +27,11 @@ module.exports = async function controller({ github, context, core, enabled = fa
   }
   const automatic = decision.automatic && issueValid;
   core.summary.addHeading(`PR #${prNumber} 风险判定`).addRaw(`${automatic ? '可自动处理' : '人工验收'}：${decision.reason}\n\nhead: ${sha}\n`);
+  const snapshot = await getPr();
+  if (snapshot.head.sha !== sha || snapshot.base.ref !== expectedBase.ref || snapshot.base.sha !== expectedBase.sha || snapshot.base.repo.full_name !== expectedBase.repository || snapshot.head.repo.full_name !== expectedBase.repository) {
+    await core.summary.addRaw('\nPR 快照已变化，不写入成功状态，等待重新评估。').write();
+    return;
+  }
 
   // Preserve only an explicit, current-SHA approval produced by the protected workflow.
   const statuses = await github.paginate(github.rest.repos.listCommitStatusesForRef, { ...repo, ref: sha, per_page: 100 });
@@ -58,7 +66,7 @@ module.exports = async function controller({ github, context, core, enabled = fa
   for (const review of reviews) if (['APPROVED', 'CHANGES_REQUESTED', 'DISMISSED'].includes(review.state)) latestReviews.set(review.user.login, review.state);
   const changesRequested = [...latestReviews.values()].includes('CHANGES_REQUESTED');
   pr = await getPr();
-  if (canMerge({ enabled, pr, expectedSha: sha, automatic, quality, unresolvedThreads, changesRequested, protectionReady })) {
+  if (canMerge({ enabled, pr, expectedSha: sha, expectedBase, automatic, quality, unresolvedThreads, changesRequested, protectionReady })) {
     const merged = await github.rest.pulls.merge({ ...repo, pull_number: prNumber, sha, merge_method: 'squash' });
     if (!merged.data.merged) throw new Error('GitHub did not merge the PR');
     // A GITHUB_TOKEN merge does not trigger push workflows. Dispatch explicitly,

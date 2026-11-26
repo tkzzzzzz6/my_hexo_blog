@@ -21,8 +21,8 @@ function classify(pr, files, policy, now = new Date()) {
   return authorization ? { automatic: true, reason: `默认分支已授权 Issue #${authorization.issue}`, issues } : manual('一般功能尚无可信基线授权，需维护者验收');
 }
 
-function canMerge({ enabled, pr, expectedSha, automatic, quality, unresolvedThreads, changesRequested, protectionReady }) {
-  return enabled === true && automatic === true && protectionReady === true && pr.state === 'open' && pr.draft === false && pr.mergeable === true && pr.mergeable_state === 'clean' && pr.head.sha === expectedSha && quality?.headSha === expectedSha && quality.conclusion === 'success' && quality.event === 'pull_request' && quality.workflowPath === '.github/workflows/pr-checks.yml' && unresolvedThreads === 0 && changesRequested === false;
+function canMerge({ enabled, pr, expectedSha, expectedBase, automatic, quality, unresolvedThreads, changesRequested, protectionReady }) {
+  return enabled === true && automatic === true && protectionReady === true && pr.state === 'open' && pr.draft === false && pr.mergeable === true && pr.mergeable_state === 'clean' && pr.head.sha === expectedSha && expectedBase?.ref === 'main' && pr.base.ref === expectedBase.ref && pr.base.sha === expectedBase.sha && pr.base.repo.full_name === expectedBase.repository && pr.head.repo.full_name === expectedBase.repository && quality?.headSha === expectedSha && quality.conclusion === 'success' && quality.event === 'pull_request' && quality.workflowPath === '.github/workflows/pr-checks.yml' && unresolvedThreads === 0 && changesRequested === false;
 }
 
 function validApprovalEnvironment(environment, maintainers) {

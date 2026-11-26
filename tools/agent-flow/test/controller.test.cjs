@@ -6,7 +6,7 @@ const approve = require('../approve.cjs');
 
 function fixture(overrides = {}) {
   const repo = { owner: 'tkzzzzzz6', repo: 'my_hexo_blog' };
-  const pr = { number: 9, state: 'open', draft: false, body: 'Fixes #12', changed_files: 1, mergeable: true, mergeable_state: 'clean', head: { sha: 'a'.repeat(40), repo: { full_name: 'tkzzzzzz6/my_hexo_blog' } }, base: { ref: 'main', repo: { full_name: 'tkzzzzzz6/my_hexo_blog' } } };
+  const pr = { number: 9, state: 'open', draft: false, body: 'Fixes #12', changed_files: 1, mergeable: true, mergeable_state: 'clean', head: { sha: 'a'.repeat(40), repo: { full_name: 'tkzzzzzz6/my_hexo_blog' } }, base: { ref: 'main', sha: 'c'.repeat(40), repo: { full_name: 'tkzzzzzz6/my_hexo_blog' } } };
   const state = { merges: [], statuses: [], ...overrides };
   let reads = 0;
   const routes = {};
@@ -16,12 +16,21 @@ function fixture(overrides = {}) {
   const github = {
     rest: {
       pulls: {
-        get: endpoint('getPr', async () => ({ data: ++reads > 1 && state.stale ? { ...pr, head: { ...pr.head, sha: 'b'.repeat(40) } } : pr })),
+        get: endpoint('getPr', async () => {
+          reads++;
+          if (reads > 1 && state.stale) return { data: { ...pr, head: { ...pr.head, sha: 'b'.repeat(40) } } };
+          if (reads > 2 && state.retarget) return { data: { ...pr, base: { ...pr.base, ref: 'release' } } };
+          return { data: pr };
+        }),
         listFiles: endpoint('files'), listReviews: endpoint('reviews'),
         merge: endpoint('merge', async params => { state.merges.push(params); return { data: { merged: true } }; })
       },
       issues: { get: endpoint('issue', async () => ({ data: { state: state.closedIssue ? 'closed' : 'open' } })) },
       repos: {
+        compareCommitsWithBasehead: endpoint('compare', async params => {
+          state.comparison = params.basehead;
+          return { data: { files: state.files || [{ filename: 'docs/guides/example.md', status: 'modified', changes: 2 }] } };
+        }),
         listCommitStatusesForRef: endpoint('statuses'),
         createCommitStatus: endpoint('status', async params => { state.statuses.push(params); return {}; }),
         getEnvironment: endpoint('env', async () => ({ data: state.environment || {} }))
@@ -56,6 +65,14 @@ test('disabled controller reports policy without merging', async () => {
 });
 test('a quality run from another PR at the same SHA cannot authorize this PR', async () => {
   const f = fixture({ runPrNumber: 999 }); await controller(f); assert.equal(f.state.merges.length, 0);
+});
+test('diff is tied to immutable base/head and no success is written for a stale snapshot', async () => {
+  const f = fixture({ stale: true }); await controller(f);
+  assert.equal(f.state.comparison, `${f.pr.base.sha}...${f.pr.head.sha}`);
+  assert.equal(f.state.statuses.filter(status => status.state === 'success').length, 0);
+});
+test('retargeting the PR after policy evaluation cannot merge another branch', async () => {
+  const f = fixture({ retarget: true }); await controller(f); assert.equal(f.state.merges.length, 0);
 });
 test('human acceptance rejects unprotected environment and stale SHA', async () => {
   let f = fixture(); await assert.rejects(approve({ ...f, sha: f.pr.head.sha }), /reviewers/);

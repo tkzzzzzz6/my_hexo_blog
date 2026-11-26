@@ -3,7 +3,7 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { classify, canMerge, validApprovalEnvironment } = require('../policy.cjs');
 const policy = { maintainers: ['owner'], maxFiles: 4, maxLines: 80, authorizations: [] };
-const pr = { number: 7, state: 'open', draft: false, body: 'Fixes #12', head: { sha: 'abc', repo: { full_name: 'o/r' } }, base: { ref: 'main', repo: { full_name: 'o/r' } } };
+const pr = { number: 7, state: 'open', draft: false, body: 'Fixes #12', head: { sha: 'abc', repo: { full_name: 'o/r' } }, base: { ref: 'main', sha: 'base', repo: { full_name: 'o/r' } } };
 const file = (filename, status = 'modified', changes = 3) => ({ filename, status, changes });
 test('explicit low-risk Markdown scope permits a small documentation edit', () => {
   assert.equal(classify(pr, [file('docs/guides/git.md')], policy).automatic, true);
@@ -33,12 +33,14 @@ test('bounded feature authorization uses base policy Issue, exact scope and expi
   assert.equal(classify(pr, [file('package.json')], { ...authorized, authorizations: [{ ...authorized.authorizations[0], paths: ['package.json'] }] }).automatic, false);
   assert.equal(classify(pr, [file('source/search/index.md')], { ...authorized, authorizations: [{ ...authorized.authorizations[0], expires: '2000-01-01' }] }).automatic, false);
 });
-const ready = { enabled: true, pr: { ...pr, mergeable: true, mergeable_state: 'clean' }, expectedSha: 'abc', automatic: true, quality: { headSha: 'abc', conclusion: 'success', event: 'pull_request', workflowPath: '.github/workflows/pr-checks.yml' }, unresolvedThreads: 0, changesRequested: false, protectionReady: true };
+const ready = { enabled: true, pr: { ...pr, mergeable: true, mergeable_state: 'clean' }, expectedSha: 'abc', expectedBase: { ref: 'main', sha: 'base', repository: 'o/r' }, automatic: true, quality: { headSha: 'abc', conclusion: 'success', event: 'pull_request', workflowPath: '.github/workflows/pr-checks.yml' }, unresolvedThreads: 0, changesRequested: false, protectionReady: true };
 test('merge only current SHA with real successful PR quality run and branch protection', () => {
   assert.equal(canMerge(ready), true);
   for (const override of [
     { enabled: false }, { expectedSha: 'old' }, { automatic: false }, { protectionReady: false },
     { pr: { ...ready.pr, draft: true } }, { pr: { ...ready.pr, mergeable_state: 'behind' } },
+    { pr: { ...ready.pr, base: { ...pr.base, ref: 'release' } } },
+    { pr: { ...ready.pr, base: { ...pr.base, sha: 'new-base' } } },
     { unresolvedThreads: 1 }, { unresolvedThreads: null }, { changesRequested: true },
     { quality: { ...ready.quality, headSha: 'old' } },
     { quality: { ...ready.quality, conclusion: 'skipped' } },
