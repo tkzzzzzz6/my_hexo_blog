@@ -1,0 +1,2 @@
+# Preserve published download bytes on all hosts.
+/source/downloads/colab-vscode-drive/** -text
