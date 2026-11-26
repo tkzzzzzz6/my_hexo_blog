@@ -48,7 +48,9 @@ Agent 自主完成已约定范围内的实现、冲突处理、检查及 feature
 
 `node tools/agent-flow/setup.cjs` 预览，合并此流程后在更新且干净的 main 使用 `--apply` 安装/复核既有保护及环境。保留相同的必需检查和人工验收入口。
 
-AGENT_AUTO_MERGE 已退役并保持 false，控制器不再读取该开关。SITE_AUTO_DEPLOY 独立控制发布，未经维护者明确选择不打开；feature push 从不发布网站。
+AGENT_AUTO_MERGE 已退役并保持 false，控制器不再读取该开关。SITE_AUTO_DEPLOY 独立控制发布，首次安装缺失时初始化为 false，复核设置时保留已有选择；feature push 从不发布网站。
+
+控制器与维护者审批共用按 PR 编号区分的串行组，避免控制器读取旧状态后将刚批准的 success 覆盖为 pending；等待环境验收的运行不被新事件取消。
 
 交付合并和网站上线是两个步骤。发布前确认源码与线上内容对齐；发布后检查文章、链接、图床和 Sitemap。失败时用新提交/PR revert，保留历史，不重写 main。
 

@@ -26,3 +26,10 @@ test('deployment remains main-only and independently opted in', () => {
   assert.deepEqual(flow.on.push.branches, ['main']);
   assert.match(flow.jobs['build-deploy'].if, /SITE_AUTO_DEPLOY/);
 });
+test('status evaluation and protected approval serialize per PR without cancellation', () => {
+  const control = load('agent-control'), approval = load('maintainer-approval');
+  assert.equal(control.concurrency.group, 'main-delivery-${{ github.event.pull_request.number || inputs.pr }}');
+  assert.equal(control.concurrency.group, approval.concurrency.group);
+  assert.equal(control.concurrency['cancel-in-progress'], false);
+  assert.equal(approval.concurrency['cancel-in-progress'], false);
+});

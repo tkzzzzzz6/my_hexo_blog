@@ -16,4 +16,11 @@ function validApprovalEnvironment(environment, maintainers) {
 }
 
 
-module.exports = { isFeatureBranch, deliveryDecision, validApprovalEnvironment };
+function planVariableUpdates(existing) {
+  const updates = [];
+  if (existing.AGENT_AUTO_MERGE !== 'false') updates.push({ name: 'AGENT_AUTO_MERGE', value: 'false', method: existing.AGENT_AUTO_MERGE === undefined ? 'POST' : 'PATCH' });
+  if (existing.SITE_AUTO_DEPLOY === undefined) updates.push({ name: 'SITE_AUTO_DEPLOY', value: 'false', method: 'POST' });
+  return updates;
+}
+
+module.exports = { isFeatureBranch, deliveryDecision, validApprovalEnvironment, planVariableUpdates };

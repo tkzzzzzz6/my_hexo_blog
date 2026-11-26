@@ -18,6 +18,10 @@ permissions:
   pull-requests: read
   statuses: write
 
+concurrency:
+  group: main-delivery-${{ github.event.pull_request.number || inputs.pr }}
+  cancel-in-progress: false
+
 jobs:
   approve:
     environment: maintainer-approval
