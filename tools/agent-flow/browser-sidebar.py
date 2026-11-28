@@ -32,7 +32,9 @@ with sync_playwright() as p:
         page.wait_for_timeout(350)
         metrics = page.evaluate('''() => {
             const rect = selector => { const r = document.querySelector(selector).getBoundingClientRect(); return {x:r.x,y:r.y,width:r.width,height:r.height,right:r.right,bottom:r.bottom}; };
+            const boxStyle = getComputedStyle(document.querySelector('.home-side-box'));
             return {clientWidth:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth,
+                background:boxStyle.backgroundColor,shadow:boxStyle.boxShadow,border:boxStyle.borderTopWidth,
                 left:rect('.home-side-left > .home-side-box'),right:rect('.home-side-right > .home-side-box'),
                 content:rect('.home-content'),stage:rect('.side-live2d-stage'),widget:rect('#live2d-widget'),
                 widgetInStage:document.querySelector('.side-live2d-stage').contains(document.getElementById('live2d-widget'))};
@@ -45,6 +47,11 @@ with sync_playwright() as p:
         assert metrics['scrollWidth'] <= metrics['clientWidth'], metrics
         assert metrics['left']['bottom'] <= height - 15, metrics
         assert metrics['right']['bottom'] <= height - 15, metrics
+        assert metrics['background'] == 'rgba(0, 0, 0, 0)', metrics
+        assert metrics['shadow'] == 'none' and metrics['border'] == '0px', metrics
+        if height >= 900:
+            assert metrics['left']['bottom'] >= height - 17, metrics
+            assert abs(metrics['left']['bottom'] - metrics['stage']['bottom'] - 16) <= 1, metrics
         assert metrics['widgetInStage'], metrics
         assert abs(metrics['widget']['width'] - 150) <= 1, metrics
         assert abs(metrics['widget']['height'] - 300) <= 1, metrics
