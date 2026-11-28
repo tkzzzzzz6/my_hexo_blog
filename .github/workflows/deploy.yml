@@ -15,6 +15,9 @@ on:
 permissions:
   contents: read
 
+env:
+  TZ: Asia/Shanghai
+
 jobs:
   build-deploy:
     # Opt in only after source/main and the live site have been reconciled.

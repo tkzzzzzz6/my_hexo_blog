@@ -4,6 +4,14 @@ const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 const cheerio = require('cheerio');
 
+function verifyPublishedRoutes(root, urls) {
+  for (const url of urls) {
+    const pathname = decodeURIComponent(new URL(url).pathname).replace(/^\/+/, '');
+    const file = path.join(root, pathname, pathname.endsWith('/') || !pathname ? 'index.html' : '');
+    if (!fs.existsSync(file) || !fs.statSync(file).isFile()) throw new Error(`Missing published route: ${url}`);
+  }
+}
+
 function build() {
   for (const command of ['clean', 'generate']) {
     const result = spawnSync(process.execPath, ['node_modules/hexo/bin/hexo', command], { encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
@@ -16,6 +24,9 @@ function build() {
   const home = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
   if (!home.includes('<html') || !home.includes(config.title)) throw new Error('Missing or invalid homepage');
   if (fs.readFileSync(path.join(root, 'CNAME'), 'utf8').trim() !== new URL(config.url).hostname) throw new Error('CNAME does not match the configured site');
+  const publishedRoutes = require('./fixtures/published-routes.json');
+  verifyPublishedRoutes(root, publishedRoutes);
+  console.log(`Verified ${publishedRoutes.length} published routes.`);
   const files = [];
   function visit(dir) {
     for (const item of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -36,4 +47,4 @@ function build() {
 if (require.main === module) {
   try { build(); } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
-module.exports = { build };
+module.exports = { build, verifyPublishedRoutes };
