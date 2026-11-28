@@ -17,6 +17,22 @@ out.mkdir(parents=True, exist_ok=True)
 mount_script = Path('themes/hingle/source/static/home-sidebar.js').read_text(encoding='utf-8')
 report = []
 
+def sprite_bounds(page):
+    return page.evaluate('''() => new Promise(resolve => {
+        requestAnimationFrame(() => {
+            const c=document.querySelector('.side-live2d-stage canvas'), r=c.getBoundingClientRect();
+            const copy=document.createElement('canvas'); copy.width=c.width; copy.height=c.height;
+            const ctx=copy.getContext('2d'); ctx.drawImage(c,0,0);
+            const pixels=ctx.getImageData(0,0,c.width,c.height).data;
+            let minX=c.width, maxY=-1;
+            for(let y=0;y<c.height;y++)for(let x=0;x<c.width;x++){
+                if(pixels[(y*c.width+x)*4+3]>16){minX=Math.min(minX,x);maxY=Math.max(maxY,y);}
+            }
+            resolve({visibleLeft:r.x+minX*r.width/c.width,footGap:innerHeight-(r.y+(maxY+1)*r.height/c.height),
+                rendered:maxY>=0,linkLeft:document.querySelector('.side-recent .post-list-link').getBoundingClientRect().x});
+        });
+    })''')
+
 with sync_playwright() as p:
     browser = p.chromium.launch(channel=args.channel, headless=True, args=['--enable-unsafe-swiftshader'])
     page = browser.new_page(viewport={'width': 1920, 'height': 1080}, device_scale_factor=1)
@@ -51,11 +67,13 @@ with sync_playwright() as p:
         assert metrics['shadow'] == 'none' and metrics['border'] == '0px', metrics
         if height >= 900:
             assert metrics['left']['bottom'] >= height - 17, metrics
-            assert abs(metrics['left']['bottom'] - metrics['stage']['bottom'] - 16) <= 1, metrics
+            sprite = sprite_bounds(page)
+            assert sprite['rendered'], sprite
+            assert abs(sprite['visibleLeft'] - sprite['linkLeft']) <= 2, sprite
+            assert 12 <= sprite['footGap'] <= 40, sprite
         assert metrics['widgetInStage'], metrics
         assert abs(metrics['widget']['width'] - 150) <= 1, metrics
         assert abs(metrics['widget']['height'] - 300) <= 1, metrics
-        assert abs(metrics['widget']['x'] + metrics['widget']['width']/2 - metrics['stage']['x'] - metrics['stage']['width']/2) <= 1, metrics
         name = f'desktop-{width}-{height}-' + ('dark' if dark else 'light')
         page.screenshot(path=str(out / (name + '.png')))
         page.evaluate('window.scrollTo({top:1000,behavior:"instant"})')
@@ -64,7 +82,11 @@ with sync_playwright() as p:
         header_bottom = page.locator('header').bounding_box()['height']
         assert sticky_top >= header_bottom, (sticky_top, header_bottom)
         assert sticky_top < header_bottom + 30, (sticky_top, header_bottom)
-        report.append({'viewport':[width,height],'dark':dark,'metrics':metrics,'stickyTop':sticky_top})
+        if height >= 900:
+            scrolled_sprite = sprite_bounds(page)
+            assert 12 <= scrolled_sprite['footGap'] <= 40, scrolled_sprite
+        report.append({'viewport':[width,height],'dark':dark,'metrics':metrics,'stickyTop':sticky_top,
+                       'sprite':sprite if height >= 900 else None})
 
     page.set_viewport_size({'width':1440,'height':900})
     button = page.locator('.side-more')
