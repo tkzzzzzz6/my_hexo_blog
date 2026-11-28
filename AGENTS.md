@@ -20,6 +20,7 @@
 
 ## Blog invariants
 
+- For daily algorithm solutions, read `docs/guides/daily-solution-writing.md` before drafting or editing. Use its flexible structure and keep code readable; detailed topic summaries have their own scope.
 - Posts: source/_posts/; paper category `Papers pile or pie?`, tag `论文阅读`.
 - Preserve URLs and Giscus pathname mapping. Credentials stay private; images/PDFs/manifests stay in ignored tools/blog-assets/, and posts use public COS URLs.
 - SITE_AUTO_DEPLOY is a separate maintainer opt-in. Never deploy source/main until its alignment with the live site is verified.
