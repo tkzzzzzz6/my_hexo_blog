@@ -30,6 +30,8 @@ disable-model-invocation: false
 
 ## 开始前必读
 
+**每日一题 / 单题题解优先读取 [每日一题写作规范](../../../docs/guides/daily-solution-writing.md)**（相对本文件）。它决定单题的内容取舍、弹性结构和代码可读性，优先于本 skill 及通用算法模板的章节、H1、emoji、文末总结要求。明确的写作或整理指令已授权范围内直接执行，不额外等待一次骨架确认；只对影响正确性或任务范围的真实缺口提问。专题总结和其他文章类型继续按各自目标写。
+
 **按需读取，不要凭记忆写。** 这些文件里的规则来自对站内 142 篇文章的真实统计，与通用 Markdown 建议不同。
 
 | 文件 | 什么时候读 |
@@ -40,7 +42,7 @@ disable-model-invocation: false
 
 ## 核心事实（已在仓库中核实，不必重复调研）
 
-- 正式文章目录 `source/_posts/`，**扁平存放、无子目录**；草稿目录 `source/_drafts/`
+- 正式文章目录 `source/_posts/`，允许现有子目录；单题优先沿用 `daily/`。编辑旧文保留原路径。草稿目录 `source/_drafts/`
 - 站内命名约定：`YYYY-MM-DD-标题.md`，文件名日期须与 frontmatter `date` 一致
 - 图片统一托管在腾讯云 COS：`https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/<文件名>.png`
 - `_config.yml` 中 `new_post_name: :title.md` —— hexo 原生 `hexo new` **不会**加日期前缀，本 skill 必须手动补
@@ -96,7 +98,7 @@ disable-model-invocation: false
 
 ### 6. 落盘
 
-写入 `source/_posts/YYYY-MM-DD-<标题>.md`。日期取当天；用户给了明确日期就用用户的。
+写入 `source/_posts/` 下；单题按每日一题规范放入 `daily/`，其余沿用相应目录。文件名 `YYYY-MM-DD-<标题>.md`。日期取当天；用户给了明确日期就用用户的。
 
 ### 7. 自检
 
@@ -179,12 +181,12 @@ git mv source/_drafts/<文件名>.md "source/_posts/$(date +%F)-<标题>.md"
 - [ ] 键名无拼写错误（`categories` 不是 `catagories`）
 - [ ] 分类来自推荐表，1–2 个；标签 2–5 个且无重复、无正文泄漏
 - [ ] 文件名符合 `YYYY-MM-DD-标题.md`，日期与 frontmatter 一致
-- [ ] 标题层级从 H1 起、无跳跃、不深于 H4
+- [ ] 标题层级无跳跃、不深于 H4；单题正文可直接从 H2 开始，其余按格式规范
 - [ ] 所有代码块都标了语言
 - [ ] 所有表格都有表头，且左右有竖线包裹
 - [ ] 中英文之间、中文与数字之间有空格；中文用全角标点
 - [ ] 图片使用站内 COS 域名或明确的占位符
-- [ ] 文末有收尾（总结 / 参考资料 / 一句小结）
+- [ ] 文末完成本题说明；单题不要求额外总结，其余类型按相应目标收尾
 - [ ] 已跑 `scripts/audit-post.sh`，`✗` 项清零
 
 ## 输出格式
